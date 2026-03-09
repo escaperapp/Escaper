@@ -1,0 +1,6 @@
+package io.escaper.escaperapp.domain.winstrategies
+
+internal val wfFull = listOf(
+    "--wf-tcp=80,443,2053,2083,2087,2096,8443",
+    "--wf-udp=443,19294-19344,50000-50100"
+)
