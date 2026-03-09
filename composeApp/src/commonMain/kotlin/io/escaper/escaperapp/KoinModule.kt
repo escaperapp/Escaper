@@ -21,7 +21,6 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
 import kotlinx.serialization.json.Json
 import org.koin.core.KoinApplication
-import org.koin.core.logger.Level
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
