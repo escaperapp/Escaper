@@ -39,6 +39,7 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.sl4j.nop)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -60,6 +61,7 @@ kotlin {
             implementation(libs.kermit)
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)
+            implementation(libs.ktor.client.logging)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -67,6 +69,7 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+            implementation(libs.sl4j.nop)
         }
     }
 }

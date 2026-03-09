@@ -2,16 +2,10 @@ package io.escaper.escaperapp
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.HttpTimeout
-import kotlinx.serialization.json.Json
-import org.koin.core.KoinApplication
-import org.koin.core.module.dsl.viewModel
-import org.koin.dsl.module
 import io.escaper.escaperapp.data.DataStoreSettingsRepository
 import io.escaper.escaperapp.data.ExecutableDownloadManager
 import io.escaper.escaperapp.data.HostListsManager
+import io.escaper.escaperapp.data.KtorKermitLogger
 import io.escaper.escaperapp.data.PathsProvider
 import io.escaper.escaperapp.data.ProxyManager
 import io.escaper.escaperapp.data.SettingsRepository
@@ -20,6 +14,16 @@ import io.escaper.escaperapp.data.ZipExtractor
 import io.escaper.escaperapp.data.createDataStore
 import io.escaper.escaperapp.domain.StrategiesFactory
 import io.escaper.escaperapp.presentation.MainScreenViewModel
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logging
+import kotlinx.serialization.json.Json
+import org.koin.core.KoinApplication
+import org.koin.core.logger.Level
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.module
 
 fun KoinApplication.installCommonModules() {
     modules(
@@ -47,6 +51,11 @@ fun KoinApplication.installCommonModules() {
                         requestTimeoutMillis = 60_000
                         connectTimeoutMillis = 30_000
                         socketTimeoutMillis = 60_000
+                    }
+                    install(Logging) {
+                        // TODO: Disable logging in relese builds
+                        level = LogLevel.ALL
+                        logger = KtorKermitLogger()
                     }
 
                     expectSuccess = false

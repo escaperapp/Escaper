@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -39,7 +41,8 @@ fun App() {
             modifier = Modifier
                 .background(background)
                 .safeContentPadding()
-                .fillMaxSize(),
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -85,9 +88,8 @@ fun App() {
                 isConnected = state.isConnected,
                 isLoading = state.isLoading,
                 modifier = Modifier.padding(
-                    top = 64.dp,
-                    start = 120.dp,
-                    end = 120.dp
+                    vertical = 64.dp,
+                    horizontal = 120.dp
                 ),
                 onClick = {
                     viewModel.switchProxy()
