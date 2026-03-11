@@ -19,11 +19,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import io.escaper.escaperapp.navigation.EscaperScreen
 import io.escaper.escaperapp.platform.UpdateWindowBackground
-import io.escaper.escaperapp.presentation.MainScreenViewModel
+import io.escaper.escaperapp.presentation.mainscreen.MainScreenViewModel
 import io.escaper.escaperapp.presentation.common.EscaperTheme
 import io.escaper.escaperapp.presentation.components.dropdown.EscaperDropdown
 import io.escaper.escaperapp.presentation.components.mainbutton.OnOffButton
+import io.escaper.escaperapp.presentation.mainscreen.MainScreen
 import org.koin.compose.viewmodel.koinViewModel
 
 internal const val APP_NAME = "Escaper"
@@ -34,68 +39,24 @@ fun App() {
     val viewModel: MainScreenViewModel = koinViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val strategies by viewModel.strategies.collectAsStateWithLifecycle()
-    val background = EscaperTheme.colorScheme.connectedAwareBackground(state.isConnected)
 
-    EscaperTheme {
-        Column(
-            modifier = Modifier
-                .background(background)
-                .safeContentPadding()
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+    val navController = rememberNavController()
+
+    EscaperTheme(state.isConnected) {
+        NavHost(
+            navController = navController,
+            startDestination = EscaperScreen.MainScreen
         ) {
-            Spacer(Modifier.height(24.dp))
-            Text(
-                text = if (state.isConnected) {
-                    "Connected"
-                } else {
-                    "Not connected"
-                },
-                style = EscaperTheme.typography.headlineLarge,
-                color = EscaperTheme.colorScheme.mainText
-            )
-            Spacer(Modifier.height(24.dp))
-            if (state.isDownloading) {
-                Text(text = "Binary not found. Downloading...")
-            }
-            state.error?.let {
-                Text(
-                    text = it,
-                    modifier = Modifier.padding(top = 16.dp),
-                    color = MaterialTheme.colorScheme.error
+            composable<EscaperScreen.MainScreen> {
+                MainScreen(
+                    state = state,
+                    strategies = strategies,
+                    onSelectStrategy = viewModel::selectStrategy,
+                    onSwitchProxy = viewModel::switchProxy,
+                    onMenuExpandedChange = viewModel::setMenuExpanded
                 )
             }
-            Spacer(Modifier.height(48.dp))
-
-            EscaperDropdown(
-                isExpanded = state.menuExpanded,
-                selectedItem = state.selectedStrategy,
-                isConnected = state.isConnected,
-                items = strategies,
-                modifier = Modifier.padding(horizontal = 36.dp),
-                emptyPlaceholder = "Select a strategy",
-                onSelectItem = {
-                    viewModel.selectStrategy(it)
-                },
-                onFormatItem = { it.name },
-                onExpandedChange = {
-                    viewModel.setMenuExpanded(it)
-                }
-            )
-            OnOffButton(
-                isConnected = state.isConnected,
-                isLoading = state.isLoading,
-                modifier = Modifier.padding(
-                    vertical = 64.dp,
-                    horizontal = 120.dp
-                ),
-                onClick = {
-                    viewModel.switchProxy()
-                }
-            )
         }
-        UpdateWindowBackground(background)
+        UpdateWindowBackground(EscaperTheme.background)
     }
 }

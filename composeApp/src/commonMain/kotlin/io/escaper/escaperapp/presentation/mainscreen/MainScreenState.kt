@@ -1,4 +1,4 @@
-package io.escaper.escaperapp.presentation
+package io.escaper.escaperapp.presentation.mainscreen
 
 import androidx.compose.runtime.Immutable
 import io.escaper.escaperapp.domain.Strategy

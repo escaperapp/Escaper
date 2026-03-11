@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
@@ -21,6 +22,10 @@ internal val LocalEscaperScheme = staticCompositionLocalOf {
 
 internal val LocalEscaperTypography = staticCompositionLocalOf {
     Typography()
+}
+
+internal val LocalBackgroundColor = compositionLocalOf {
+    Color.Unspecified
 }
 
 private const val TextSelectionBackgroundOpacity = 0.4f
@@ -35,27 +40,41 @@ object EscaperTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalEscaperTypography.current
+
+    val background: Color
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalBackgroundColor.current
 }
 
 @Composable
 internal fun EscaperTheme(
+    isConnected: Boolean,
     isDark: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    val colorScheme = if (isDark) {
-        DarkEscaperColorScheme
-    } else {
-        LightEscaperColorScheme
+    val colorScheme = remember(isDark) {
+        if (isDark) {
+            DarkEscaperColorScheme
+        } else {
+            LightEscaperColorScheme
+        }
     }
-    val rippleIndication = ripple()
+    val rippleIndication = ripple(
+        color = colorScheme.mainText
+    )
     val selectionColors = rememberTextSelectionColors(colorScheme)
     val typography = EscaperTheme.typography
     CompositionLocalProvider(
         LocalEscaperScheme provides colorScheme,
         LocalIndication provides rippleIndication,
         LocalTextSelectionColors provides selectionColors,
+        LocalBackgroundColor provides colorScheme.connectedAwareBackground(isConnected)
     ) {
-        ProvideTextStyle(value = typography.bodyLarge, content = content)
+        ProvideTextStyle(
+            value = typography.bodyLarge,
+            content = content
+        )
     }
 }
 

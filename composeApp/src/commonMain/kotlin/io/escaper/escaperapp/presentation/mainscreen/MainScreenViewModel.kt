@@ -1,4 +1,4 @@
-package io.escaper.escaperapp.presentation
+package io.escaper.escaperapp.presentation.mainscreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

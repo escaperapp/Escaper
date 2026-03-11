@@ -13,7 +13,7 @@ import io.escaper.escaperapp.data.ZapretUrlProvider
 import io.escaper.escaperapp.data.ZipExtractor
 import io.escaper.escaperapp.data.createDataStore
 import io.escaper.escaperapp.domain.StrategiesFactory
-import io.escaper.escaperapp.presentation.MainScreenViewModel
+import io.escaper.escaperapp.presentation.mainscreen.MainScreenViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpTimeout
