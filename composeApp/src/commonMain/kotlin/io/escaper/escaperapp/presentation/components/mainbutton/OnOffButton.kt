@@ -107,7 +107,7 @@ internal fun OnOffButton(
 
         if (isLoading) {
             CircularButtonLoader(
-                loaderColor = EscaperTheme.colorScheme.mainText
+                loaderColor = EscaperTheme.colors.mainText
             )
         }
     }
@@ -117,7 +117,7 @@ internal fun OnOffButton(
 private fun rememberButtonColors(
     isConnected: Boolean,
 ): MainButtonColors {
-    val colors = EscaperTheme.colorScheme
+    val colors = EscaperTheme.colors
     return remember(isConnected) {
         if (isConnected) {
             MainButtonColors(

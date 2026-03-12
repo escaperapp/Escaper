@@ -31,7 +31,7 @@ internal val LocalBackgroundColor = compositionLocalOf {
 private const val TextSelectionBackgroundOpacity = 0.4f
 
 object EscaperTheme {
-    val colorScheme: EscaperColorScheme
+    val colors: EscaperColorScheme
         @Composable
         @ReadOnlyComposable
         get() = LocalEscaperScheme.current
@@ -102,6 +102,7 @@ data class EscaperColorScheme(
     val innerShadow: Color,
     val pingCircles: Color,
     val shadowGlow: Color,
+    val error: Color,
 ) {
     fun connectedAwareBackground(
         isConnected: Boolean,
@@ -118,6 +119,7 @@ private val DarkEscaperColorScheme = EscaperColorScheme(
     backgroundDisconnected = Color(68, 66, 82),
     pingCircles = Color(6, 66, 103),
     shadowGlow = Color(79, 214, 247),
+    error = Color(252, 140, 125, 255),
 )
 
 // TODO: Adapt to light colors
@@ -131,4 +133,5 @@ private val LightEscaperColorScheme = EscaperColorScheme(
     backgroundDisconnected = Color(68, 66, 82),
     pingCircles = Color(6, 66, 103),
     shadowGlow = Color(79, 214, 247),
+    error = Color(252, 140, 125, 255),
 )

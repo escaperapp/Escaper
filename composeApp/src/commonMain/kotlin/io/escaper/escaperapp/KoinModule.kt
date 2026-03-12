@@ -14,6 +14,7 @@ import io.escaper.escaperapp.data.ZipExtractor
 import io.escaper.escaperapp.data.createDataStore
 import io.escaper.escaperapp.domain.StrategiesFactory
 import io.escaper.escaperapp.presentation.mainscreen.MainScreenViewModel
+import io.escaper.escaperapp.presentation.settings.SettingsViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpTimeout
@@ -97,6 +98,9 @@ fun KoinApplication.installCommonModules() {
                     downloadManager = get(),
                     strategiesFactory = get(),
                 )
+            }
+            viewModel {
+                SettingsViewModel()
             }
         }
     )

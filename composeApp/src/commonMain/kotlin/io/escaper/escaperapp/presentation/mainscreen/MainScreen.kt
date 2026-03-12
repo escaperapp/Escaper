@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -46,17 +45,20 @@ internal fun MainScreen(
                 "Not connected"
             },
             style = EscaperTheme.typography.headlineLarge,
-            color = EscaperTheme.colorScheme.mainText
+            color = EscaperTheme.colors.mainText
         )
         Spacer(Modifier.height(24.dp))
         if (state.isDownloading) {
-            Text(text = "Binary not found. Downloading...")
+            Text(
+                text = "Binary not found. Downloading...",
+                color = EscaperTheme.colors.mainText
+            )
         }
         state.error?.let {
             Text(
                 text = it,
                 modifier = Modifier.padding(top = 16.dp),
-                color = MaterialTheme.colorScheme.error
+                color = EscaperTheme.colors.error
             )
         }
         Spacer(Modifier.height(48.dp))

@@ -23,12 +23,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.escaper.escaperapp.navigation.EscaperScreen
+import io.escaper.escaperapp.navigation.ProvideNavController
 import io.escaper.escaperapp.platform.UpdateWindowBackground
 import io.escaper.escaperapp.presentation.mainscreen.MainScreenViewModel
 import io.escaper.escaperapp.presentation.common.EscaperTheme
 import io.escaper.escaperapp.presentation.components.dropdown.EscaperDropdown
 import io.escaper.escaperapp.presentation.components.mainbutton.OnOffButton
 import io.escaper.escaperapp.presentation.mainscreen.MainScreen
+import io.escaper.escaperapp.presentation.settings.SettingsScreen
 import org.koin.compose.viewmodel.koinViewModel
 
 internal const val APP_NAME = "Escaper"
@@ -43,18 +45,23 @@ fun App() {
     val navController = rememberNavController()
 
     EscaperTheme(state.isConnected) {
-        NavHost(
-            navController = navController,
-            startDestination = EscaperScreen.MainScreen
-        ) {
-            composable<EscaperScreen.MainScreen> {
-                MainScreen(
-                    state = state,
-                    strategies = strategies,
-                    onSelectStrategy = viewModel::selectStrategy,
-                    onSwitchProxy = viewModel::switchProxy,
-                    onMenuExpandedChange = viewModel::setMenuExpanded
-                )
+        ProvideNavController(navController) {
+            NavHost(
+                navController = navController,
+                startDestination = EscaperScreen.MainScreen
+            ) {
+                composable<EscaperScreen.MainScreen> {
+                    MainScreen(
+                        state = state,
+                        strategies = strategies,
+                        onSelectStrategy = viewModel::selectStrategy,
+                        onSwitchProxy = viewModel::switchProxy,
+                        onMenuExpandedChange = viewModel::setMenuExpanded
+                    )
+                }
+                composable<EscaperScreen.SettingsScreen> {
+                    SettingsScreen()
+                }
             }
         }
         UpdateWindowBackground(EscaperTheme.background)
