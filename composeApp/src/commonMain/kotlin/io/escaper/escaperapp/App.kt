@@ -1,27 +1,19 @@
 package io.escaper.escaperapp
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import io.escaper.escaperapp.navigation.EscaperScreen
+import io.escaper.escaperapp.navigation.ProvideNavController
 import io.escaper.escaperapp.platform.UpdateWindowBackground
-import io.escaper.escaperapp.presentation.MainScreenViewModel
 import io.escaper.escaperapp.presentation.common.EscaperTheme
-import io.escaper.escaperapp.presentation.components.dropdown.EscaperDropdown
-import io.escaper.escaperapp.presentation.components.mainbutton.OnOffButton
+import io.escaper.escaperapp.presentation.mainscreen.MainScreen
+import io.escaper.escaperapp.presentation.mainscreen.MainScreenViewModel
+import io.escaper.escaperapp.presentation.settings.SettingsScreen
 import org.koin.compose.viewmodel.koinViewModel
 
 internal const val APP_NAME = "Escaper"
@@ -32,68 +24,29 @@ fun App() {
     val viewModel: MainScreenViewModel = koinViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val strategies by viewModel.strategies.collectAsStateWithLifecycle()
-    val background = EscaperTheme.colorScheme.connectedAwareBackground(state.isConnected)
 
-    EscaperTheme {
-        Column(
-            modifier = Modifier
-                .background(background)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Spacer(Modifier.height(24.dp))
-            Text(
-                text = if (state.isConnected) {
-                    "Connected"
-                } else {
-                    "Not connected"
-                },
-                style = EscaperTheme.typography.headlineLarge,
-                color = EscaperTheme.colorScheme.mainText
-            )
-            Spacer(Modifier.height(24.dp))
-            if (state.isDownloading) {
-                Text(text = "Binary not found. Downloading...")
-            }
-            state.error?.let {
-                Text(
-                    text = it,
-                    modifier = Modifier.padding(top = 16.dp),
-                    color = MaterialTheme.colorScheme.error
-                )
-            }
-            Spacer(Modifier.height(48.dp))
+    val navController = rememberNavController()
 
-            EscaperDropdown(
-                isExpanded = state.menuExpanded,
-                selectedItem = state.selectedStrategy,
-                isConnected = state.isConnected,
-                items = strategies,
-                modifier = Modifier.padding(horizontal = 36.dp),
-                emptyPlaceholder = "Select a strategy",
-                onSelectItem = {
-                    viewModel.selectStrategy(it)
-                },
-                onFormatItem = { it.name },
-                onExpandedChange = {
-                    viewModel.setMenuExpanded(it)
+    EscaperTheme(state.isConnected) {
+        ProvideNavController(navController) {
+            NavHost(
+                navController = navController,
+                startDestination = EscaperScreen.MainScreen
+            ) {
+                composable<EscaperScreen.MainScreen> {
+                    MainScreen(
+                        state = state,
+                        strategies = strategies,
+                        onSelectStrategy = viewModel::selectStrategy,
+                        onSwitchProxy = viewModel::switchProxy,
+                        onMenuExpandedChange = viewModel::setMenuExpanded
+                    )
                 }
-            )
-            OnOffButton(
-                isConnected = state.isConnected,
-                isLoading = state.isLoading,
-                modifier = Modifier.padding(
-                    top = 64.dp,
-                    start = 120.dp,
-                    end = 120.dp
-                ),
-                onClick = {
-                    viewModel.switchProxy()
+                composable<EscaperScreen.SettingsScreen> {
+                    SettingsScreen()
                 }
-            )
+            }
         }
-        UpdateWindowBackground(background)
+        UpdateWindowBackground(EscaperTheme.background)
     }
 }

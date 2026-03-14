@@ -56,7 +56,7 @@ internal fun <T> EscaperDropdown(
                 onExpandedChange(false)
             },
             shape = LabelShape,
-            containerColor = EscaperTheme.colorScheme.innerShadow
+            containerColor = EscaperTheme.colors.innerShadow
         ) {
             for (item in items) {
                 Column(
@@ -72,7 +72,7 @@ internal fun <T> EscaperDropdown(
                 ) {
                     Text(
                         text = onFormatItem(item),
-                        color = EscaperTheme.colorScheme.mainText,
+                        color = EscaperTheme.colors.mainText,
                         style = EscaperTheme.typography.labelLarge
                     )
                 }
@@ -90,14 +90,14 @@ private fun DropdownSelectedLabel(
     modifier: Modifier = Modifier,
 ) {
     val background = if (isConnected) {
-        EscaperTheme.colorScheme.mainButtonDark
+        EscaperTheme.colors.mainButtonDark
     } else {
-        EscaperTheme.colorScheme.backgroundDisconnected
+        EscaperTheme.colors.backgroundDisconnected
     }
     val iconBackground = if (isConnected) {
-        EscaperTheme.colorScheme.background
+        EscaperTheme.colors.background
     } else {
-        EscaperTheme.colorScheme.backgroundDisconnected
+        EscaperTheme.colors.backgroundDisconnected
     }
     Row(
         modifier = modifier
@@ -119,13 +119,13 @@ private fun DropdownSelectedLabel(
     ) {
         Text(
             text = text,
-            color = EscaperTheme.colorScheme.mainText,
+            color = EscaperTheme.colors.mainText,
             style = EscaperTheme.typography.labelLarge
         )
         Icon(
             imageVector = IcArrow,
             contentDescription = null,
-            tint = EscaperTheme.colorScheme.mainText,
+            tint = EscaperTheme.colors.mainText,
             modifier = Modifier
                 .rotate(90f)
                 .dropShadow(
@@ -133,7 +133,7 @@ private fun DropdownSelectedLabel(
                     shadow = Shadow(
                         spread = 0.dp,
                         radius = 20.dp,
-                        color = EscaperTheme.colorScheme.shadowGlow
+                        color = EscaperTheme.colors.shadowGlow
                     )
                 )
                 .background(
