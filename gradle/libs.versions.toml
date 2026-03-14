@@ -63,6 +63,7 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.
 compose-multiplatform-plugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "composeMultiplatform" }
 sl4j-nop = { module = "org.slf4j:slf4j-nop", version.ref = "sl4j" }
 themeanimator = { module = "io.github.gleb-skobinsky:themeanimator", version.ref = "themeanimator" }
+themeanimator-storage = { module = "io.github.gleb-skobinsky:themeanimator-storage", version.ref = "themeanimator" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

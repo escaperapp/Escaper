@@ -64,6 +64,7 @@ kotlin {
             implementation(libs.ktor.client.logging)
             implementation(libs.navigation.compose)
             implementation(libs.themeanimator)
+            implementation(libs.themeanimator.storage)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
