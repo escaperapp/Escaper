@@ -60,6 +60,7 @@ kotlin {
             implementation(libs.kermit)
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)
+            implementation(libs.themeanimator)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
