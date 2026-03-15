@@ -2,7 +2,6 @@ package io.escaper.escaperapp.data
 
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 internal actual class ExecutableDownloadManager actual constructor(
