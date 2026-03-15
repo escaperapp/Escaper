@@ -75,8 +75,8 @@ internal fun SettingsScreen() {
                         iconTint = EscaperTheme.colors.mainText,
                         buttonIcon = rememberLottieIconJson(
                             animationSpec = animationSpec,
-                            startProgress = 0.8f,
-                            endProgress = 0.5f
+                            lightThemeProgress = 0.8f,
+                            darkThemeProgress = 0.5f
                         ) {
                             EscaperRes.readBytes("files/anim.json").decodeToString()
                         },
