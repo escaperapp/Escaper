@@ -18,4 +18,10 @@ internal abstract class BaseStrategiesBuilder(
     )
 
     abstract fun buildStrategies(): List<Strategy>
+
+    companion object {
+        val NoOp = object : BaseStrategiesBuilder("", "") {
+            override fun buildStrategies(): List<Strategy> = emptyList()
+        }
+    }
 }

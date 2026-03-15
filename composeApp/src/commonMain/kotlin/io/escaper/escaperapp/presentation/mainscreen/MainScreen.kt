@@ -3,13 +3,10 @@ package io.escaper.escaperapp.presentation.mainscreen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -27,6 +24,7 @@ import io.escaper.escaperapp.navigation.LocalNavController
 import io.escaper.escaperapp.presentation.common.EscaperTheme
 import io.escaper.escaperapp.presentation.components.dropdown.EscaperDropdown
 import io.escaper.escaperapp.presentation.components.mainbutton.OnOffButton
+import io.escaper.escaperapp.presentation.components.topbar.EscaperTopBar
 import io.escaper.escaperapp.presentation.icons.IconSettings
 
 @Composable
@@ -42,25 +40,25 @@ internal fun MainScreen(
         contentColor = EscaperTheme.colors.mainText,
         containerColor = EscaperTheme.colors.background,
         topBar = {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                IconButton(
-                    onClick = {
-                        navController.navigate(EscaperScreen.SettingsScreen) {
-                            launchSingleTop = true
+            EscaperTopBar(
+                title = {},
+                actions = {
+                    IconButton(
+                        onClick = {
+                            navController.navigate(EscaperScreen.SettingsScreen) {
+                                launchSingleTop = true
+                            }
                         }
+                    ) {
+                        Icon(
+                            imageVector = IconSettings,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp),
+                            tint = EscaperTheme.colors.mainText
+                        )
                     }
-                ) {
-                    Icon(
-                        imageVector = IconSettings,
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp),
-                        tint = EscaperTheme.colors.mainText
-                    )
                 }
-            }
+            )
         }
     ) {
         Column(

@@ -44,7 +44,7 @@ internal class StrategiesFactory(
             Platform.Windows -> WinStrategiesBuilder(binDir = binDir, listsDir = listsDir)
             Platform.Android,
             Platform.Ios,
-                -> TODO()
+                -> BaseStrategiesBuilder.NoOp
         }
     }
 }

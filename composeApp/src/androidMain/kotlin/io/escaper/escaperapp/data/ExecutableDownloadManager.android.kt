@@ -1,7 +1,9 @@
 package io.escaper.escaperapp.data
 
 import io.ktor.client.HttpClient
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 internal actual class ExecutableDownloadManager actual constructor(
     pathsProvider: PathsProvider,
@@ -9,10 +11,11 @@ internal actual class ExecutableDownloadManager actual constructor(
     zapretUrlProvider: ZapretUrlProvider,
     zipExtractor: ZipExtractor,
 ) {
-    actual val isDownloading: StateFlow<Boolean>
-        get() = TODO("Not yet implemented")
+    private val _isDownloading = MutableStateFlow(false)
+    actual val isDownloading = _isDownloading.asStateFlow()
 
     actual suspend fun downloadAndExtractBinaries(): DownloadResult {
-        TODO("Not yet implemented")
+        // TODO("Not yet implemented")
+        return DownloadResult(false, null)
     }
 }

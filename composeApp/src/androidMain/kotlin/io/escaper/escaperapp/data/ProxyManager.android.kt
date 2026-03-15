@@ -4,6 +4,8 @@ import kotlinx.coroutines.flow.StateFlow
 import io.escaper.escaperapp.domain.ProxyStartResult
 import io.escaper.escaperapp.domain.ProxyStopResult
 import io.escaper.escaperapp.domain.StrategiesFactory
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 internal actual class ProxyManager actual constructor(
     pathsProvider: PathsProvider,
@@ -11,8 +13,8 @@ internal actual class ProxyManager actual constructor(
     settingsRepository: SettingsRepository,
     strategiesFactory: StrategiesFactory,
 ) {
-    actual val state: StateFlow<ProxyManagerState>
-        get() = TODO("Not yet implemented")
+    private val _state = MutableStateFlow(ProxyManagerState.Initial)
+    actual val state: StateFlow<ProxyManagerState> = _state.asStateFlow()
 
     actual suspend fun startProxy(): ProxyStartResult {
         TODO("Not yet implemented")

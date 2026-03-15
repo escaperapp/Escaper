@@ -1,5 +1,6 @@
 package io.escaper.escaperapp.presentation.settings
 
+import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import escaper.composeapp.generated.resources.EscaperRes
 import io.escaper.escaperapp.navigation.LocalNavController
 import io.escaper.escaperapp.presentation.common.EscaperTheme
 import io.escaper.escaperapp.presentation.common.escaperThemeViewModel
@@ -26,6 +28,7 @@ import io.escaper.escaperapp.presentation.components.topbar.EscaperTopBar
 import io.github.themeanimator.ThemeAnimationFormat
 import io.github.themeanimator.ThemeAnimationScope
 import io.github.themeanimator.button.ThemeSwitchButton
+import io.github.themeanimator.button.rememberLottieIconJson
 import io.github.themeanimator.rememberThemeAnimationState
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -36,9 +39,10 @@ internal fun SettingsScreen() {
     val themeViewModel = escaperThemeViewModel()
     val navController = LocalNavController.current
 
+    val animationSpec: AnimationSpec<Float> = tween(600)
     val themeAnimationState = rememberThemeAnimationState(
         themeProvider = themeViewModel,
-        animationSpec = tween(600),
+        animationSpec = animationSpec,
         format = ThemeAnimationFormat.CircularAroundPress,
     )
 
@@ -68,7 +72,16 @@ internal fun SettingsScreen() {
                 ) {
                     ThemeSwitchButton(
                         animationState = themeAnimationState,
-                        iconTint = EscaperTheme.colors.mainText
+                        iconTint = EscaperTheme.colors.mainText,
+                        buttonIcon = rememberLottieIconJson(
+                            animationSpec = animationSpec,
+                            startProgress = 0.8f,
+                            endProgress = 0.5f
+                        ) {
+                            EscaperRes.readBytes("files/anim.json").decodeToString()
+                        },
+                        iconSize = 40.dp,
+                        iconScale = 2f
                     )
                 }
             }
