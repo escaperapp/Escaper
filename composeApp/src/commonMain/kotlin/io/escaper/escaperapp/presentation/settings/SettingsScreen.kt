@@ -78,7 +78,7 @@ internal fun SettingsScreen() {
                             lightThemeProgress = 0.8f,
                             darkThemeProgress = 0.5f
                         ) {
-                            EscaperRes.readBytes("files/anim.json").decodeToString()
+                            EscaperRes.readBytes("files/theme_change.json").decodeToString()
                         },
                         iconSize = 40.dp,
                         iconScale = 2f
