@@ -2,6 +2,7 @@ package io.escaper.escaperapp.presentation.settings
 
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
@@ -17,6 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -27,7 +31,7 @@ import io.escaper.escaperapp.presentation.common.escaperThemeViewModel
 import io.escaper.escaperapp.presentation.components.topbar.EscaperTopBar
 import io.github.themeanimator.ThemeAnimationFormat
 import io.github.themeanimator.ThemeAnimationScope
-import io.github.themeanimator.button.ThemeSwitchButton
+import io.github.themeanimator.button.ThemeSwitch
 import io.github.themeanimator.button.rememberLottieIconJson
 import io.github.themeanimator.rememberThemeAnimationState
 import org.koin.compose.viewmodel.koinViewModel
@@ -70,18 +74,19 @@ internal fun SettingsScreen() {
                     label = "App theme",
                     modifier = Modifier.padding(top = 36.dp)
                 ) {
-                    ThemeSwitchButton(
+                    ThemeSwitch(
                         animationState = themeAnimationState,
-                        iconTint = EscaperTheme.colors.mainText,
+                        iconTint = Color.Unspecified,
                         buttonIcon = rememberLottieIconJson(
                             animationSpec = animationSpec,
-                            lightThemeProgress = 0.8f,
-                            darkThemeProgress = 0.5f
+                            lightThemeProgress = 0f,
+                            systemThemeProgress = 0.2f,
+                            darkThemeProgress = 1f
                         ) {
                             EscaperRes.readBytes("files/theme_change.json").decodeToString()
                         },
-                        iconSize = 40.dp,
-                        iconScale = 2f
+                        modifier = Modifier.size(width = 100.dp, height = 40.dp),
+                        iconSize = DpSize(width = 100.dp, height = 40.dp)
                     )
                 }
             }
