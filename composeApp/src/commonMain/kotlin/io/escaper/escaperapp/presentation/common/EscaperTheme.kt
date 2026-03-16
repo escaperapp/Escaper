@@ -53,12 +53,10 @@ internal fun EscaperTheme(
     isDark: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    val colorScheme = remember(isDark) {
-        if (isDark) {
-            DarkEscaperColorScheme
-        } else {
-            LightEscaperColorScheme
-        }
+    val colorScheme = if (isDark) {
+        DarkEscaperColorScheme
+    } else {
+        LightEscaperColorScheme
     }
     val rippleIndication = ripple(
         color = colorScheme.mainText
@@ -124,14 +122,14 @@ private val DarkEscaperColorScheme = EscaperColorScheme(
 
 // TODO: Adapt to light colors
 private val LightEscaperColorScheme = EscaperColorScheme(
-    background = Color(34, 21, 111),
-    mainText = Color.White,
-    mainButtonDark = Color(103, 79, 247),
-    mainButtonLight = Color(129, 108, 255),
-    mainButtonDisconnected = Color(59, 58, 72),
-    innerShadow = Color(39, 38, 52, 255),
-    backgroundDisconnected = Color(68, 66, 82),
-    pingCircles = Color(6, 66, 103),
-    shadowGlow = Color(79, 214, 247),
-    error = Color(252, 140, 125, 255),
+    background = Color(225, 224, 255, 255),
+    mainText = Color(33, 33, 33, 255),
+    mainButtonDark = Color(194, 184, 255, 255),
+    mainButtonLight = Color(197, 188, 255, 255),
+    mainButtonDisconnected = Color(139, 139, 165, 255),
+    innerShadow = Color(99, 94, 127, 255),
+    backgroundDisconnected = Color(255, 255, 255, 255),
+    pingCircles = Color(7, 138, 224, 255),
+    shadowGlow = Color(0, 128, 160, 255),
+    error = Color(156, 44, 30, 255),
 )

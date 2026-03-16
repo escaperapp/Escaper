@@ -2,7 +2,7 @@ package io.escaper.escaperapp.presentation.settings
 
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,6 +34,7 @@ import io.github.themeanimator.ThemeAnimationScope
 import io.github.themeanimator.button.ThemeSwitch
 import io.github.themeanimator.button.rememberLottieIconJson
 import io.github.themeanimator.rememberThemeAnimationState
+import io.github.themeanimator.theme.Theme
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -41,6 +42,7 @@ internal fun SettingsScreen() {
     val viewModel: SettingsViewModel = koinViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val themeViewModel = escaperThemeViewModel()
+    val theme by themeViewModel.currentTheme.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
 
     val animationSpec: AnimationSpec<Float> = tween(600)
@@ -65,13 +67,14 @@ internal fun SettingsScreen() {
         ) { paddings ->
             Column(
                 modifier = Modifier
+                    .background(EscaperTheme.background)
                     .padding(paddings)
                     .padding(horizontal = 16.dp)
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState()),
             ) {
                 SettingsRow(
-                    label = "App theme",
+                    label = "App theme: ${theme.toLabel()}",
                     modifier = Modifier.padding(top = 36.dp)
                 ) {
                     ThemeSwitch(
@@ -85,13 +88,19 @@ internal fun SettingsScreen() {
                         ) {
                             EscaperRes.readBytes("files/theme_change.json").decodeToString()
                         },
-                        modifier = Modifier.size(width = 100.dp, height = 40.dp),
-                        iconSize = DpSize(width = 100.dp, height = 40.dp)
+                        modifier = Modifier.size(width = 72.dp, height = 36.dp),
+                        iconSize = DpSize(width = 72.dp, height = 36.dp)
                     )
                 }
             }
         }
     }
+}
+
+private fun Theme.toLabel(): String = when (this) {
+    Theme.Dark -> "Dark"
+    Theme.Light -> "Light"
+    Theme.System -> "System"
 }
 
 @Composable
