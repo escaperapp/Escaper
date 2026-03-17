@@ -1,0 +1,11 @@
+<resources>
+    <string name="settings_label">Settings</string>
+    <string name="connected_state_label">Connected</string>
+    <string name="disconnected_state_label">Not connected</string>
+    <string name="download_in_progress_label">Binary not found. Downloading...</string>
+    <string name="strategy_placeholder">Select a strategy</string>
+    <string name="dark_ui_theme_label">dark</string>
+    <string name="light_ui_theme_label">light</string>
+    <string name="system_ui_theme_label">system</string>
+    <string name="selected_ui_theme">App theme: %1$s</string>
+</resources>

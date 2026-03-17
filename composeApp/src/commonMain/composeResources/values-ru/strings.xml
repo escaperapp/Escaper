@@ -1,0 +1,11 @@
+<resources>
+    <string name="settings_label">Настройки</string>
+    <string name="connected_state_label">Подключено</string>
+    <string name="disconnected_state_label">Не подключено</string>
+    <string name="download_in_progress_label">Исполняемый файл не найден. Скачивание...</string>
+    <string name="strategy_placeholder">Выберите стратегию</string>
+    <string name="dark_ui_theme_label">темная</string>
+    <string name="light_ui_theme_label">светлая</string>
+    <string name="system_ui_theme_label">системная</string>
+    <string name="selected_ui_theme">Тема оформления: %1$s</string>
+</resources>

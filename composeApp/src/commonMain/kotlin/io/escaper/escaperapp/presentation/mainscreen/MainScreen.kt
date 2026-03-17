@@ -18,6 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import escaper.composeapp.generated.resources.EscaperRes
+import escaper.composeapp.generated.resources.connected_state_label
+import escaper.composeapp.generated.resources.disconnected_state_label
+import escaper.composeapp.generated.resources.download_in_progress_label
+import escaper.composeapp.generated.resources.strategy_placeholder
 import io.escaper.escaperapp.domain.Strategy
 import io.escaper.escaperapp.navigation.EscaperScreen
 import io.escaper.escaperapp.navigation.LocalNavController
@@ -26,6 +31,7 @@ import io.escaper.escaperapp.presentation.components.dropdown.EscaperDropdown
 import io.escaper.escaperapp.presentation.components.mainbutton.OnOffButton
 import io.escaper.escaperapp.presentation.components.topbar.EscaperTopBar
 import io.escaper.escaperapp.presentation.icons.IconSettings
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun MainScreen(
@@ -71,18 +77,20 @@ internal fun MainScreen(
         ) {
             Spacer(Modifier.height(24.dp))
             Text(
-                text = if (state.isConnected) {
-                    "Connected"
-                } else {
-                    "Not connected"
-                },
+                text = stringResource(
+                    if (state.isConnected) {
+                        EscaperRes.string.connected_state_label
+                    } else {
+                        EscaperRes.string.disconnected_state_label
+                    }
+                ),
                 style = EscaperTheme.typography.headlineLarge,
                 color = EscaperTheme.colors.mainText
             )
             Spacer(Modifier.height(24.dp))
             if (state.isDownloading) {
                 Text(
-                    text = "Binary not found. Downloading...",
+                    text = stringResource(EscaperRes.string.download_in_progress_label),
                     color = EscaperTheme.colors.mainText
                 )
             }
@@ -101,7 +109,7 @@ internal fun MainScreen(
                 isConnected = state.isConnected,
                 items = strategies,
                 modifier = Modifier.padding(horizontal = 36.dp),
-                emptyPlaceholder = "Select a strategy",
+                emptyPlaceholder = stringResource(EscaperRes.string.strategy_placeholder),
                 onSelectItem = onSelectStrategy,
                 onFormatItem = { it.name },
                 onExpandedChange = onMenuExpandedChange

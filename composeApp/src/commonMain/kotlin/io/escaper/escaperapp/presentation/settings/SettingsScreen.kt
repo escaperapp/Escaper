@@ -25,6 +25,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import escaper.composeapp.generated.resources.EscaperRes
+import escaper.composeapp.generated.resources.dark_ui_theme_label
+import escaper.composeapp.generated.resources.light_ui_theme_label
+import escaper.composeapp.generated.resources.selected_ui_theme
+import escaper.composeapp.generated.resources.settings_label
+import escaper.composeapp.generated.resources.system_ui_theme_label
 import io.escaper.escaperapp.navigation.LocalNavController
 import io.escaper.escaperapp.presentation.common.EscaperTheme
 import io.escaper.escaperapp.presentation.common.escaperThemeViewModel
@@ -35,6 +40,8 @@ import io.github.themeanimator.button.ThemeSwitch
 import io.github.themeanimator.button.rememberLottieIconJson
 import io.github.themeanimator.rememberThemeAnimationState
 import io.github.themeanimator.theme.Theme
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -58,7 +65,7 @@ internal fun SettingsScreen() {
         Scaffold(
             topBar = {
                 EscaperTopBar(
-                    title = "Settings",
+                    title = stringResource(EscaperRes.string.settings_label),
                     onBackClick = navController::navigateUp
                 )
             },
@@ -74,7 +81,10 @@ internal fun SettingsScreen() {
                     .verticalScroll(rememberScrollState()),
             ) {
                 SettingsRow(
-                    label = "App theme: ${theme.toLabel()}",
+                    label = stringResource(
+                        EscaperRes.string.selected_ui_theme,
+                        stringResource(theme.toLabel())
+                    ),
                     modifier = Modifier.padding(top = 36.dp)
                 ) {
                     ThemeSwitch(
@@ -97,10 +107,10 @@ internal fun SettingsScreen() {
     }
 }
 
-private fun Theme.toLabel(): String = when (this) {
-    Theme.Dark -> "Dark"
-    Theme.Light -> "Light"
-    Theme.System -> "System"
+private fun Theme.toLabel(): StringResource = when (this) {
+    Theme.Dark -> EscaperRes.string.dark_ui_theme_label
+    Theme.Light -> EscaperRes.string.light_ui_theme_label
+    Theme.System -> EscaperRes.string.system_ui_theme_label
 }
 
 @Composable
