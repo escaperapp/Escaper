@@ -8,4 +8,7 @@
     <string name="light_ui_theme_label">light</string>
     <string name="system_ui_theme_label">system</string>
     <string name="selected_ui_theme">App theme: %1$s</string>
+    <string name="selected_language">App language</string>
+    <string name="lang_en" translatable="false">English</string>
+    <string name="lang_ru" translatable="false">Русский</string>
 </resources>

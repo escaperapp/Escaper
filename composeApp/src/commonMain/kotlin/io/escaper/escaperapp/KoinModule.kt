@@ -12,7 +12,9 @@ import io.escaper.escaperapp.data.SettingsRepository
 import io.escaper.escaperapp.data.ZapretUrlProvider
 import io.escaper.escaperapp.data.ZipExtractor
 import io.escaper.escaperapp.data.createDataStore
+import io.escaper.escaperapp.domain.LocaleRepository
 import io.escaper.escaperapp.domain.StrategiesFactory
+import io.escaper.escaperapp.platform.initializeLocale
 import io.escaper.escaperapp.presentation.mainscreen.MainScreenViewModel
 import io.escaper.escaperapp.presentation.settings.SettingsViewModel
 import io.ktor.client.HttpClient
@@ -76,6 +78,13 @@ fun KoinApplication.installCommonModules() {
                 )
             }
             single {
+                LocaleRepository(
+                    dataStore = get()
+                ).also {
+                    it.initializeLocale()
+                }
+            }
+            single {
                 ExecutableDownloadManager(
                     pathsProvider = get(),
                     httpClient = get(),
@@ -100,7 +109,9 @@ fun KoinApplication.installCommonModules() {
                 )
             }
             viewModel {
-                SettingsViewModel()
+                SettingsViewModel(
+                    localeRepository = get()
+                )
             }
         }
     )
