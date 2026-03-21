@@ -12,6 +12,9 @@ import io.escaper.escaperapp.data.SettingsRepository
 import io.escaper.escaperapp.data.ZapretUrlProvider
 import io.escaper.escaperapp.data.ZipExtractor
 import io.escaper.escaperapp.data.createDataStore
+import io.escaper.escaperapp.data.db.AppDatabase
+import io.escaper.escaperapp.data.db.getDatabaseBuilder
+import io.escaper.escaperapp.data.db.getRoomDatabase
 import io.escaper.escaperapp.domain.LocaleRepository
 import io.escaper.escaperapp.domain.StrategiesFactory
 import io.escaper.escaperapp.platform.initializeLocale
@@ -33,6 +36,9 @@ fun KoinApplication.installCommonModules() {
             single { PathsProvider() }
             single { ZipExtractor() }
             single { HostListsManager() }
+            single<AppDatabase> {
+                getRoomDatabase(builder = getDatabaseBuilder())
+            }
             single {
                 StrategiesFactory(
                     pathsProvider = get(),

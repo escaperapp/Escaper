@@ -9,6 +9,8 @@ plugins {
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.serialization)
     alias(libs.plugins.windows.manifest)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.androidx.room)
 }
 
 version = "1.0.2"
@@ -65,6 +67,8 @@ kotlin {
             implementation(libs.navigation.compose)
             implementation(libs.themeanimator)
             implementation(libs.themeanimator.storage)
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.sqlite.bundled)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -106,6 +110,10 @@ android {
 
 dependencies {
     debugImplementation(libs.compose.uiTooling)
+    add("kspJvm", libs.androidx.room.compiler)
+    add("kspAndroid", libs.androidx.room.compiler)
+    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
+    add("kspIosArm64", libs.androidx.room.compiler)
 }
 
 compose.desktop {
@@ -145,4 +153,8 @@ compose.resources {
 windowsManifestForCompose {
     enabled = true
     manifestFile = project.file("src/jvmMain/resources/app.manifest")
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }

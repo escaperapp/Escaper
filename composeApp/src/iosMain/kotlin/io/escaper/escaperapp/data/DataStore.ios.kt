@@ -14,14 +14,19 @@ import platform.Foundation.NSUserDomainMask
 internal actual fun Scope.createDataStore(): DataStore<Preferences> {
     return PreferenceDataStoreFactory.createWithPath(
         produceFile = {
-            val documentDirectory: String = NSFileManager.defaultManager.URLForDirectory(
-                directory = NSDocumentDirectory,
-                inDomain = NSUserDomainMask,
-                appropriateForURL = null,
-                create = false,
-                error = null,
-            )?.path.orEmpty()
+            val documentDirectory = getNsDocumentDirectory()
             "$documentDirectory/$dataStoreFileName".toPath()
         }
     )
+}
+
+@OptIn(ExperimentalForeignApi::class)
+internal fun getNsDocumentDirectory(): String {
+    return NSFileManager.defaultManager.URLForDirectory(
+        directory = NSDocumentDirectory,
+        inDomain = NSUserDomainMask,
+        appropriateForURL = null,
+        create = false,
+        error = null,
+    )?.path.orEmpty()
 }

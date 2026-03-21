@@ -1,0 +1,8 @@
+package io.escaper.escaperapp.data.db
+
+import androidx.room.RoomDatabaseConstructor
+
+@Suppress("KotlinNoActualForExpect")
+expect object AppDatabaseConstructor : RoomDatabaseConstructor<AppDatabase> {
+    override fun initialize(): AppDatabase
+}
