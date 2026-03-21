@@ -9,4 +9,7 @@ internal sealed interface EscaperScreen {
 
     @Serializable
     data object SettingsScreen : EscaperScreen
+
+    @Serializable
+    data object MyStrategiesScreen : EscaperScreen
 }

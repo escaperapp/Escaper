@@ -21,6 +21,7 @@ import io.escaper.escaperapp.presentation.common.EscaperTheme
 import io.escaper.escaperapp.presentation.common.escaperThemeViewModel
 import io.escaper.escaperapp.presentation.mainscreen.MainScreen
 import io.escaper.escaperapp.presentation.mainscreen.MainScreenViewModel
+import io.escaper.escaperapp.presentation.mystrategies.MyStrategiesScreen
 import io.escaper.escaperapp.presentation.settings.SettingsScreen
 import io.github.themeanimator.theme.isDark
 import org.koin.compose.viewmodel.koinViewModel
@@ -76,6 +77,9 @@ fun App() {
                 }
                 composable<EscaperScreen.SettingsScreen> {
                     SettingsScreen()
+                }
+                composable<EscaperScreen.MyStrategiesScreen> {
+                    MyStrategiesScreen()
                 }
             }
         }

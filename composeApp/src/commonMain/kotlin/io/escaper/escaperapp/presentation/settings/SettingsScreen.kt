@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -41,16 +43,19 @@ import escaper.composeapp.generated.resources.dark_ui_theme_label
 import escaper.composeapp.generated.resources.lang_en
 import escaper.composeapp.generated.resources.lang_ru
 import escaper.composeapp.generated.resources.light_ui_theme_label
+import escaper.composeapp.generated.resources.my_strategies_label
 import escaper.composeapp.generated.resources.selected_language
 import escaper.composeapp.generated.resources.selected_ui_theme
 import escaper.composeapp.generated.resources.settings_label
 import escaper.composeapp.generated.resources.system_ui_theme_label
 import io.escaper.escaperapp.domain.AppLanguage
+import io.escaper.escaperapp.navigation.EscaperScreen
 import io.escaper.escaperapp.navigation.LocalNavController
 import io.escaper.escaperapp.platform.ObserveLocaleUpdates
 import io.escaper.escaperapp.presentation.common.EscaperTheme
 import io.escaper.escaperapp.presentation.common.escaperThemeViewModel
 import io.escaper.escaperapp.presentation.components.topbar.EscaperTopBar
+import io.escaper.escaperapp.presentation.icons.IconArrowLeft
 import io.github.themeanimator.ThemeAnimationFormat
 import io.github.themeanimator.ThemeAnimationScope
 import io.github.themeanimator.button.ThemeSwitch
@@ -100,16 +105,15 @@ internal fun SettingsScreen() {
                     modifier = Modifier
                         .background(EscaperTheme.background)
                         .padding(paddings)
-                        .padding(horizontal = 16.dp)
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     SettingsRow(
                         label = stringResource(
                             EscaperRes.string.selected_ui_theme,
                             stringResource(theme.toLabel())
-                        ),
-                        modifier = Modifier.padding(top = 36.dp)
+                        )
                     ) {
                         ThemeSwitch(
                             animationState = themeAnimationState,
@@ -129,8 +133,7 @@ internal fun SettingsScreen() {
                     SettingsRow(
                         label = stringResource(
                             EscaperRes.string.selected_language
-                        ),
-                        modifier = Modifier.padding(top = 36.dp)
+                        )
                     ) {
                         var isExpanded by rememberSaveable { mutableStateOf(false) }
                         ExposedDropdownMenuBox(
@@ -159,6 +162,23 @@ internal fun SettingsScreen() {
                                 }
                             }
                         }
+                    }
+                    SettingsRow(
+                        label = stringResource(EscaperRes.string.my_strategies_label),
+                        onClick = {
+                            navController.navigate(EscaperScreen.MyStrategiesScreen) {
+                                launchSingleTop = true
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = IconArrowLeft,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .rotate(180f),
+                            tint = EscaperTheme.colors.mainText
+                        )
                     }
                 }
             }
@@ -201,10 +221,21 @@ private fun Theme.toLabel(): StringResource = when (this) {
 private inline fun SettingsRow(
     label: String,
     modifier: Modifier = Modifier,
+    noinline onClick: (() -> Unit)? = null,
     content: @Composable RowScope.() -> Unit
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .then(
+                if (onClick != null) {
+                    Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickable(onClick = onClick)
+                } else {
+                    Modifier
+                }
+            ).padding(horizontal = 16.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         content = {
