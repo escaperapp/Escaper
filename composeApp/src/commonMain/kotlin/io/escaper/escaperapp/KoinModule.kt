@@ -86,9 +86,7 @@ fun KoinApplication.installCommonModules() {
             single {
                 LocaleRepository(
                     dataStore = get()
-                ).also {
-                    it.initializeLocale()
-                }
+                )
             }
             single {
                 ExecutableDownloadManager(
@@ -121,4 +119,5 @@ fun KoinApplication.installCommonModules() {
             }
         }
     )
+    koin.get<LocaleRepository>().initializeLocale()
 }

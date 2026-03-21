@@ -14,7 +14,7 @@ internal actual fun getDefaultLocale(): AppLanguage {
 
 @Composable
 internal actual fun ObserveLocaleUpdates(locale: Flow<AppLanguage>) {
-    LaunchedEffect(Unit) {
+    LaunchedEffect(locale) {
         locale.collect { lang ->
             setDesktopLocale(lang)
         }

@@ -21,7 +21,7 @@ internal actual fun getDefaultLocale(): AppLanguage {
 internal actual fun ObserveLocaleUpdates(
     locale: Flow<AppLanguage>,
 ) {
-    LaunchedEffect(Unit) {
+    LaunchedEffect(locale) {
         locale.collect { lang ->
             setIosLocale(lang)
         }
