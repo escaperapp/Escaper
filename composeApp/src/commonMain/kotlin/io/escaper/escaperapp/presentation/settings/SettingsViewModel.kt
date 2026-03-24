@@ -2,7 +2,6 @@ package io.escaper.escaperapp.presentation.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.escaper.escaperapp.data.StrategyRepository
 import io.escaper.escaperapp.domain.AppLanguage
 import io.escaper.escaperapp.domain.LocaleRepository
 import kotlinx.coroutines.Job
