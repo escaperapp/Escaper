@@ -81,6 +81,9 @@ fun App() {
                 composable<EscaperScreen.MyStrategiesScreen> {
                     MyStrategiesScreen()
                 }
+                composable<EscaperScreen.EditStrategyScreen> {
+
+                }
             }
         }
         UpdateWindowBackground(EscaperTheme.background)
