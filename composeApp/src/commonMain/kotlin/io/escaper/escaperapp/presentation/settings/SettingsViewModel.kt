@@ -2,6 +2,7 @@ package io.escaper.escaperapp.presentation.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.escaper.escaperapp.data.StrategyRepository
 import io.escaper.escaperapp.domain.AppLanguage
 import io.escaper.escaperapp.domain.LocaleRepository
 import kotlinx.coroutines.Job
@@ -13,6 +14,7 @@ import kotlinx.coroutines.launch
 
 internal class SettingsViewModel(
     private val localeRepository: LocaleRepository,
+    private val strategyRepository: StrategyRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(SettingsScreenState.Initial)
     val state = _state.asStateFlow()
@@ -33,7 +35,16 @@ internal class SettingsViewModel(
         }
     }
 
+    private fun subscribeToStrategies() {
+        viewModelScope.launch {
+            strategyRepository.observeStrategies().collectLatest { strategies ->
+                _state.update { it.copy(customStrategies = strategies) }
+            }
+        }
+    }
+
     init {
         subscribeToLocale()
+        subscribeToStrategies()
     }
 }
