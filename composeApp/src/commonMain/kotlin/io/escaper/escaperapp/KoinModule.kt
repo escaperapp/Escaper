@@ -20,6 +20,7 @@ import io.escaper.escaperapp.domain.LocaleRepository
 import io.escaper.escaperapp.domain.StrategiesFactory
 import io.escaper.escaperapp.platform.initializeLocale
 import io.escaper.escaperapp.presentation.mainscreen.MainScreenViewModel
+import io.escaper.escaperapp.presentation.mystrategies.MyStrategiesViewModel
 import io.escaper.escaperapp.presentation.settings.SettingsViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -121,6 +122,10 @@ fun KoinApplication.installCommonModules() {
             viewModel {
                 SettingsViewModel(
                     localeRepository = get(),
+                )
+            }
+            viewModel {
+                MyStrategiesViewModel(
                     strategyRepository = get()
                 )
             }

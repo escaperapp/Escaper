@@ -13,6 +13,7 @@ internal class StrategyRepository(
         return dao.subscribeToStrategies().map { strategiesWithGroups ->
             strategiesWithGroups.map { strategyWithGroups ->
                 Strategy(
+                    id = strategyWithGroups.strategy.id,
                     name = strategyWithGroups.strategy.name,
                     args = strategyWithGroups.groups.flatMap { it.args }
                 )

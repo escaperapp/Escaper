@@ -5,7 +5,6 @@ import io.escaper.escaperapp.domain.Strategy
 
 data class SettingsScreenState(
     val appLanguage: AppLanguage,
-    val customStrategies: List<Strategy> = emptyList(),
 ) {
     companion object {
         val Initial = SettingsScreenState(
