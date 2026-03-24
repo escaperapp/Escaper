@@ -10,4 +10,6 @@
     <string name="selected_ui_theme">Тема оформления: %1$s</string>
     <string name="selected_language">Язык приложения</string>
     <string name="my_strategies_label">Мои стратегии</string>
+    <string name="no_custom_strategies_hint">Вы пока не добавили ни одной стратегии</string>
+    <string name="add_strategy">Добавить стратегию</string>
 </resources>
