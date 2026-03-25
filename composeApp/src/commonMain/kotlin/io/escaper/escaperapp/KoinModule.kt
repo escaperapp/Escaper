@@ -9,6 +9,7 @@ import io.escaper.escaperapp.data.KtorKermitLogger
 import io.escaper.escaperapp.data.PathsProvider
 import io.escaper.escaperapp.data.ProxyManager
 import io.escaper.escaperapp.data.SettingsRepository
+import io.escaper.escaperapp.data.StrategyRepository
 import io.escaper.escaperapp.data.ZapretUrlProvider
 import io.escaper.escaperapp.data.ZipExtractor
 import io.escaper.escaperapp.data.createDataStore
@@ -19,6 +20,7 @@ import io.escaper.escaperapp.domain.LocaleRepository
 import io.escaper.escaperapp.domain.StrategiesFactory
 import io.escaper.escaperapp.platform.initializeLocale
 import io.escaper.escaperapp.presentation.mainscreen.MainScreenViewModel
+import io.escaper.escaperapp.presentation.mystrategies.MyStrategiesViewModel
 import io.escaper.escaperapp.presentation.settings.SettingsViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -88,6 +90,11 @@ fun KoinApplication.installCommonModules() {
                     dataStore = get()
                 )
             }
+            single<StrategyRepository> {
+                StrategyRepository(
+                    database = get()
+                )
+            }
             single {
                 ExecutableDownloadManager(
                     pathsProvider = get(),
@@ -114,7 +121,12 @@ fun KoinApplication.installCommonModules() {
             }
             viewModel {
                 SettingsViewModel(
-                    localeRepository = get()
+                    localeRepository = get(),
+                )
+            }
+            viewModel {
+                MyStrategiesViewModel(
+                    strategyRepository = get()
                 )
             }
         }

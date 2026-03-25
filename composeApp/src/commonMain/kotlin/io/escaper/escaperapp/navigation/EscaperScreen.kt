@@ -12,4 +12,17 @@ internal sealed interface EscaperScreen {
 
     @Serializable
     data object MyStrategiesScreen : EscaperScreen
+
+    @Serializable
+    data class EditStrategyScreen(
+        val editMode: StrategyEditMode
+    ) {
+        @Serializable
+        sealed interface StrategyEditMode {
+            data object Create : StrategyEditMode
+            data class Update(
+                val strategyId: String,
+            ) : StrategyEditMode
+        }
+    }
 }

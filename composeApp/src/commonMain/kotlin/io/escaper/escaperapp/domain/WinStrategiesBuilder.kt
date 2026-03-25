@@ -47,9 +47,9 @@ internal class WinStrategiesBuilder(
 
 
         return listOf(
-            Strategy("ALT2", alt2Args),
+            Strategy(name = "ALT2", args = alt2Args),
             Strategy(
-                "fake-badseq",
+                name = "fake-badseq",
                 args = listOf(
                     wfFull,
                     udpRules(
