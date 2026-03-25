@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.escaper.escaperapp.navigation.EscaperScreen
 import io.escaper.escaperapp.navigation.ProvideNavController
+import io.escaper.escaperapp.navigation.StrategyEditModeTypeMap
 import io.escaper.escaperapp.platform.UpdateWindowBackground
 import io.escaper.escaperapp.presentation.common.EscaperTheme
 import io.escaper.escaperapp.presentation.common.escaperThemeViewModel
@@ -81,7 +82,9 @@ fun App() {
                 composable<EscaperScreen.MyStrategiesScreen> {
                     MyStrategiesScreen()
                 }
-                composable<EscaperScreen.EditStrategyScreen> {
+                composable<EscaperScreen.EditStrategyScreen>(
+                    typeMap = StrategyEditModeTypeMap
+                ) {
 
                 }
             }
