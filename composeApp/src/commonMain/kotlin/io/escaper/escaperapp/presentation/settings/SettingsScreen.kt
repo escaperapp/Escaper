@@ -4,6 +4,7 @@ import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -23,10 +24,12 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -58,6 +61,7 @@ import io.escaper.escaperapp.presentation.components.topbar.EscaperTopBar
 import io.escaper.escaperapp.presentation.icons.IconArrowLeft
 import io.github.themeanimator.ThemeAnimationFormat
 import io.github.themeanimator.ThemeAnimationScope
+import io.github.themeanimator.button.ExperimentalThemeSwitchApi
 import io.github.themeanimator.button.ThemeSwitch
 import io.github.themeanimator.button.rememberLottieIconJson
 import io.github.themeanimator.rememberThemeAnimationState
@@ -69,7 +73,9 @@ import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
+private val SwitchIndication = ripple(color = Color.Black)
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalThemeSwitchApi::class)
 @Composable
 internal fun SettingsScreen() {
     val viewModel: SettingsViewModel = koinViewModel()
@@ -127,7 +133,9 @@ internal fun SettingsScreen() {
                                 EscaperRes.readBytes("files/theme_change.json").decodeToString()
                             },
                             modifier = Modifier.size(width = 72.dp, height = 36.dp),
-                            iconSize = DpSize(width = 72.dp, height = 36.dp)
+                            iconSize = DpSize(width = 72.dp, height = 36.dp),
+                            indication = SwitchIndication,
+                            interactionSource = remember { MutableInteractionSource() }
                         )
                     }
                     SettingsRow(
