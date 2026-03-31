@@ -1,5 +1,6 @@
 package io.escaper.escaperapp.data.db.daos
 
+import androidx.compose.runtime.State
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction

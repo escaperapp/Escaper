@@ -19,6 +19,7 @@ import io.escaper.escaperapp.data.db.getRoomDatabase
 import io.escaper.escaperapp.domain.LocaleRepository
 import io.escaper.escaperapp.domain.StrategiesFactory
 import io.escaper.escaperapp.platform.initializeLocale
+import io.escaper.escaperapp.presentation.editstrategy.EditStrategyViewModel
 import io.escaper.escaperapp.presentation.mainscreen.MainScreenViewModel
 import io.escaper.escaperapp.presentation.mystrategies.MyStrategiesViewModel
 import io.escaper.escaperapp.presentation.settings.SettingsViewModel
@@ -127,6 +128,12 @@ fun KoinApplication.installCommonModules() {
             viewModel {
                 MyStrategiesViewModel(
                     strategyRepository = get()
+                )
+            }
+            viewModel { params ->
+                EditStrategyViewModel(
+                    strategyRepository = get(),
+                    editMode = params.get()
                 )
             }
         }

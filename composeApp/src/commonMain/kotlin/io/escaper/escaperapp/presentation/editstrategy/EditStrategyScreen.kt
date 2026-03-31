@@ -10,12 +10,17 @@ import io.escaper.escaperapp.navigation.StrategyEditMode
 import io.escaper.escaperapp.presentation.common.EscaperTheme
 import io.escaper.escaperapp.presentation.components.topbar.EscaperTopBar
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 internal fun EditStrategyScreen(
     mode: StrategyEditMode,
 ) {
     val navController = LocalNavController.current
+    val viewModel: EditStrategyViewModel = koinViewModel {
+        parametersOf(mode)
+    }
     EditStrategyContent(
         mode = mode,
         onBack = navController::navigateUp
@@ -52,3 +57,7 @@ private fun StrategyEditMode.toLabel(): String {
     }
 }
 
+@Composable
+private fun AddNewInputGroup() {
+
+}
