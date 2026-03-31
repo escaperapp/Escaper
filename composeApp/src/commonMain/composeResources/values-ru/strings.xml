@@ -12,4 +12,6 @@
     <string name="my_strategies_label">Мои стратегии</string>
     <string name="no_custom_strategies_hint">Вы пока не добавили ни одной стратегии</string>
     <string name="add_strategy">Добавить стратегию</string>
+    <string name="edit_strategy_header">Стратегия %1$s</string>
+    <string name="add_strategy_header">Добавление стратегии</string>
 </resources>

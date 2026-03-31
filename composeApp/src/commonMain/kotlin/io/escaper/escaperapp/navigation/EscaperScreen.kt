@@ -27,5 +27,6 @@ sealed interface StrategyEditMode {
     @Serializable
     data class Update(
         val strategyId: String,
+        val strategyName: String,
     ) : StrategyEditMode
 }

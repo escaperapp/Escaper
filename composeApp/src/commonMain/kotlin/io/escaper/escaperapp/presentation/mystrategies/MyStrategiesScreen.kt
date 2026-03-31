@@ -57,7 +57,10 @@ internal fun MyStrategiesScreen(
         onEditClick = {
             navController.navigate(
                 EscaperScreen.EditStrategyScreen(
-                    StrategyEditMode.Update(it.id)
+                    StrategyEditMode.Update(
+                        strategyId = it.id,
+                        strategyName = it.name
+                    )
                 )
             )
         },

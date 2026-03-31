@@ -15,12 +15,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import io.escaper.escaperapp.navigation.EscaperScreen
 import io.escaper.escaperapp.navigation.ProvideNavController
 import io.escaper.escaperapp.navigation.StrategyEditModeTypeMap
 import io.escaper.escaperapp.platform.UpdateWindowBackground
 import io.escaper.escaperapp.presentation.common.EscaperTheme
 import io.escaper.escaperapp.presentation.common.escaperThemeViewModel
+import io.escaper.escaperapp.presentation.editstrategy.EditStrategyScreen
 import io.escaper.escaperapp.presentation.mainscreen.MainScreen
 import io.escaper.escaperapp.presentation.mainscreen.MainScreenViewModel
 import io.escaper.escaperapp.presentation.mystrategies.MyStrategiesScreen
@@ -86,7 +88,8 @@ fun App() {
                 composable<EscaperScreen.EditStrategyScreen>(
                     typeMap = StrategyEditModeTypeMap
                 ) {
-                    Text("Edit Strategy Screen")
+                    val screen: EscaperScreen.EditStrategyScreen = it.toRoute()
+                    EditStrategyScreen(screen.editMode)
                 }
             }
         }
