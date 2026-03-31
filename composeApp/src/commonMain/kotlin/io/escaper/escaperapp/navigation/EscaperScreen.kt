@@ -1,6 +1,5 @@
 package io.escaper.escaperapp.navigation
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
