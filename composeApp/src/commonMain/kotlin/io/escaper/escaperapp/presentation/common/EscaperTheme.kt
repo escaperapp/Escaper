@@ -49,7 +49,7 @@ object EscaperTheme {
 
 @Composable
 internal fun EscaperTheme(
-    isConnected: Boolean,
+    isConnected: Boolean = true,
     isDark: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
@@ -101,6 +101,7 @@ data class EscaperColorScheme(
     val pingCircles: Color,
     val shadowGlow: Color,
     val error: Color,
+    val backgroundElevated: Color,
 ) {
     fun connectedAwareBackground(
         isConnected: Boolean,
@@ -118,6 +119,7 @@ private val DarkEscaperColorScheme = EscaperColorScheme(
     pingCircles = Color(6, 66, 103),
     shadowGlow = Color(79, 214, 247),
     error = Color(252, 140, 125, 255),
+    backgroundElevated = Color(67, 51, 153, 255),
 )
 
 // TODO: Adapt to light colors
@@ -132,4 +134,5 @@ private val LightEscaperColorScheme = EscaperColorScheme(
     pingCircles = Color(7, 138, 224, 255),
     shadowGlow = Color(0, 128, 160, 255),
     error = Color(156, 44, 30, 255),
+    backgroundElevated = Color(198, 198, 224, 255),
 )

@@ -20,4 +20,8 @@ internal class StrategyRepository(
             }
         }
     }
+
+    suspend fun deleteStrategy(strategy: Strategy) {
+        dao.deleteStrategyById(strategy.id)
+    }
 }

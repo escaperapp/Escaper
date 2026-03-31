@@ -1,5 +1,6 @@
 package io.escaper.escaperapp.presentation.mystrategies
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -22,11 +24,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import escaper.composeapp.generated.resources.EscaperRes
+import escaper.composeapp.generated.resources.add_strategy
+import escaper.composeapp.generated.resources.my_strategies_label
+import escaper.composeapp.generated.resources.no_custom_strategies_hint
 import io.escaper.escaperapp.domain.Strategy
+import io.escaper.escaperapp.navigation.EscaperScreen
 import io.escaper.escaperapp.navigation.LocalNavController
+import io.escaper.escaperapp.navigation.StrategyEditMode
 import io.escaper.escaperapp.presentation.common.EscaperTheme
 import io.escaper.escaperapp.presentation.components.topbar.EscaperTopBar
 import io.escaper.escaperapp.presentation.icons.IconDelete
@@ -34,51 +44,81 @@ import io.escaper.escaperapp.presentation.icons.IconEdit
 import io.escaper.escaperapp.presentation.icons.IconNoResults
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import escaper.composeapp.generated.resources.EscaperRes
-import escaper.composeapp.generated.resources.add_strategy
-import escaper.composeapp.generated.resources.my_strategies_label
-import escaper.composeapp.generated.resources.no_custom_strategies_hint
 
 @Composable
 internal fun MyStrategiesScreen(
     viewModel: MyStrategiesViewModel = koinViewModel()
 ) {
     val navController = LocalNavController.current
-    val strategies by viewModel.strategies.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    MyStrategiesScreenContent(
+        state = state,
+        onBack = navController::navigateUp,
+        onEditClick = {
+            navController.navigate(
+                EscaperScreen.EditStrategyScreen(
+                    StrategyEditMode.Update(it.id)
+                )
+            )
+        },
+        onAddStrategy = {
+            navController.navigate(
+                EscaperScreen.EditStrategyScreen(
+                    StrategyEditMode.Create
+                )
+            )
+        },
+        onEvent = viewModel::onEvent
+    )
+}
+
+@Composable
+private fun MyStrategiesScreenContent(
+    state: MyStrategiesState,
+    onBack: () -> Unit,
+    onAddStrategy: () -> Unit,
+    onEditClick: (Strategy) -> Unit,
+    onEvent: (MyStrategiesEvent) -> Unit,
+) {
+    val strategies = state.strategies
     Scaffold(
         topBar = {
             EscaperTopBar(
                 title = stringResource(EscaperRes.string.my_strategies_label),
-                onBackClick = navController::navigateUp
+                onBackClick = onBack
             )
         },
         contentColor = EscaperTheme.colors.mainText,
         containerColor = EscaperTheme.background
     ) { paddings ->
-        if (strategies.isEmpty()) {
-            EmptyStrategiesContent(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddings)
-            )
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddings)
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(
-                    items = strategies,
-                    key = { it.name }
-                ) { strategy ->
-                    StrategyItem(
-                        strategy = strategy,
-                        onEditClick = { /* TODO */ },
-                        onDeleteClick = { viewModel.deleteStrategy(strategy) }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddings)
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            if (strategies.isEmpty()) {
+                item {
+                    EmptyStrategiesContent(
+                        onAddStrategyClick = onAddStrategy,
+                        modifier = Modifier
+                            .fillParentMaxSize()
+                            .padding(paddings)
                     )
                 }
+            }
+            items(
+                items = strategies,
+                key = { it.name }
+            ) { strategy ->
+                StrategyItem(
+                    strategy = strategy,
+                    onEditClick = { onEditClick(strategy) },
+                    onDeleteClick = {
+                        onEvent(MyStrategiesEvent.ShowDeletionConfirmation(strategy))
+                    }
+                )
             }
         }
     }
@@ -86,7 +126,8 @@ internal fun MyStrategiesScreen(
 
 @Composable
 private fun EmptyStrategiesContent(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onAddStrategyClick: () -> Unit,
 ) {
     Box(
         modifier = modifier,
@@ -110,7 +151,7 @@ private fun EmptyStrategiesContent(
             )
             Spacer(modifier = Modifier.height(24.dp))
             Button(
-                onClick = { /* TODO */ },
+                onClick = onAddStrategyClick,
                 modifier = Modifier.fillMaxWidth(0.6f),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = EscaperTheme.colors.mainButtonLight,
@@ -134,14 +175,18 @@ private fun StrategyItem(
     onDeleteClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(EscaperTheme.colors.backgroundElevated),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = strategy.name,
             color = EscaperTheme.colors.mainText,
-            style = EscaperTheme.typography.bodyMedium
+            style = EscaperTheme.typography.bodyLarge,
+            modifier = Modifier.padding(start = 10.dp)
         )
         Row {
             IconButton(
@@ -165,5 +210,35 @@ private fun StrategyItem(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun MyStrategiesContent() {
+    EscaperTheme(
+        isDark = true
+    ) {
+        MyStrategiesScreenContent(
+            state = MyStrategiesState(
+                strategyPendingForDeletion = null,
+                strategies = listOf(
+                    Strategy(
+                        id = "123",
+                        name = "Custom",
+                        args = emptyList()
+                    ),
+                    Strategy(
+                        id = "124",
+                        name = "Custom 2",
+                        args = emptyList()
+                    )
+                )
+            ),
+            onBack = {},
+            onEditClick = {},
+            onEvent = {},
+            onAddStrategy = {}
+        )
     }
 }

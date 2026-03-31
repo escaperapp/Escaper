@@ -20,4 +20,8 @@ internal interface StrategyDao {
     @Transaction
     @Query("SELECT * FROM strategies WHERE id = :strategyId")
     suspend fun getStrategyById(strategyId: String): StrategyWithGroups?
+
+    @Transaction
+    @Query("DELETE FROM strategies WHERE id = :strategyId")
+    suspend fun deleteStrategyById(strategyId: String)
 }
