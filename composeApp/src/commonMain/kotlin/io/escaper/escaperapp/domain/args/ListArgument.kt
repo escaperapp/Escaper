@@ -1,9 +1,6 @@
 package io.escaper.escaperapp.domain.args
 
-data class ListArgument(
-    override val name: String,
-    val values: List<String>
-) : ZapretArgument {
-    override fun asStringArg(): String =
-        "--$name=${values.joinToString(",")}"
-}
+abstract class ListArgument<V : ListValue>(
+    override val name: ArgumentKey,
+    override val value: V,
+) : ZapretArgument<List<String>, ArgValue<List<String>>>

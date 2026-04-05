@@ -3,12 +3,28 @@ package io.escaper.escaperapp.domain.args
 sealed interface ArgValue<T : Any> {
     val rawValue: T
 
-    fun fromCli(cliValue: String): ArgValue<T>
-
     fun toCli(): String
 }
 
-sealed interface IntValue : ArgValue<Int>
+interface ArgValueParser {
+    fun fromCli(cliValue: RawValueInput): ArgValue<*>?
+}
+
+sealed interface IntValue : ArgValue<Int> {
+    override fun toCli(): String = rawValue.toString()
+}
+
+sealed interface DoubleValue : ArgValue<Double> {
+    override fun toCli(): String = rawValue.toString()
+}
+
+sealed interface StringValue : ArgValue<String> {
+    override fun toCli(): String = rawValue
+}
+
+sealed interface ListValue : ArgValue<List<String>> {
+    override fun toCli(): String = rawValue.joinToString(ValuesListDelimiter)
+}
 
 internal enum class NfwsDebugMode(
     override val rawValue: Int,
@@ -20,12 +36,14 @@ internal enum class NfwsDebugMode(
         return rawValue.toString()
     }
 
-    override fun fromCli(cliValue: String): IntValue {
-        val intValue = cliValue.toIntOrNull()
-        return when (intValue) {
-            0 -> RELEASE
-            1 -> DEBUG
-            else -> error("Invalid cli value")
+    companion object : ArgValueParser {
+        override fun fromCli(cliValue: RawValueInput): IntValue? {
+            val intValue = cliValue.asInt()
+            return when (intValue?.value) {
+                0 -> RELEASE
+                1 -> DEBUG
+                else -> null
+            }
         }
     }
 }
@@ -41,13 +59,15 @@ internal enum class TpwsDebugMode(
         return rawValue.toString()
     }
 
-    override fun fromCli(cliValue: String): TpwsDebugMode {
-        val intValue = cliValue.toIntOrNull()
-        return when (intValue) {
-            0 -> QUIET
-            1 -> VERBOSE
-            2 -> DEBUGGING
-            else -> error("Invalid cli value")
+    companion object : ArgValueParser {
+        override fun fromCli(cliValue: RawValueInput): TpwsDebugMode? {
+            val intValueInput = cliValue.asInt()
+            return when (intValueInput?.value) {
+                0 -> QUIET
+                1 -> VERBOSE
+                2 -> DEBUGGING
+                else -> null
+            }
         }
     }
 }

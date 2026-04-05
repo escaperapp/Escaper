@@ -1,8 +1,6 @@
 package io.escaper.escaperapp.domain.args
 
-data class DoubleArgument(
-    override val name: String,
-    val value: Double
-) : ZapretArgument {
-    override fun asStringArg(): String = "--$name=$value"
-}
+abstract class DoubleArgument<V : DoubleValue>(
+    override val name: ArgumentKey,
+    override val value: V,
+) : ZapretArgument<Double, V>
