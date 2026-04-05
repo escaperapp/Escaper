@@ -27,6 +27,7 @@ internal class StrategyRepository(
     private fun StrategyWithGroups.toStrategy() = Strategy(
         id = strategy.id,
         name = strategy.name,
-        args = groups.flatMap { it.args }
+        args = emptyList(),
+        zapretArgs = groups.flatMap { it.args }
     )
 }
