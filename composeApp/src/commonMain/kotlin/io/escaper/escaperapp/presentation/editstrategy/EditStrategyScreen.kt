@@ -58,6 +58,6 @@ private fun StrategyEditMode.toLabel(): String {
 }
 
 @Composable
-private fun AddNewInputGroup() {
+private fun AddNewGroupInput() {
 
 }
