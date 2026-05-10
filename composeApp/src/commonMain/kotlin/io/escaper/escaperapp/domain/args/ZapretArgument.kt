@@ -27,7 +27,7 @@ sealed interface ZapretArgument<R : Any, V : ArgValue<R>> {
         fun fromStringArg(
             arg: String,
             executableType: ExecutableType,
-        ): ZapretArgument<*, *>? {
+        ): AnyZapretArgument? {
             if (!arg.startsWith(ArgPrefix)) {
                 return null
             }
@@ -88,11 +88,11 @@ sealed interface ZapretArgument<R : Any, V : ArgValue<R>> {
     }
 }
 
-inline val ZapretArgument<*, *>.isWinwsCompatible: Boolean
+inline val AnyZapretArgument.isWinwsCompatible: Boolean
     get() = ExecutableType.Winws in name.executableTypes
 
-inline val ZapretArgument<*, *>.isNfqsCompatible: Boolean
+inline val AnyZapretArgument.isNfqsCompatible: Boolean
     get() = ExecutableType.Nfqs in name.executableTypes
 
-inline val ZapretArgument<*, *>.isTpwsCompatible: Boolean
+inline val AnyZapretArgument.isTpwsCompatible: Boolean
     get() = ExecutableType.Tpws in name.executableTypes

@@ -16,7 +16,7 @@ import io.escaper.escaperapp.domain.args.tpws.VersionArgument
 enum class ArgumentKey(
     val cliKey: String,
     val executableTypes: Set<ExecutableType>,
-    val parser: (RawValueInput) -> ZapretArgument<*, *>?
+    val parser: (RawValueInput) -> AnyZapretArgument?
 ) {
     TpwsDebugModeArg(
         cliKey = "debug",
@@ -102,7 +102,7 @@ enum class ArgumentKey(
 
     constructor(
         cliKey: String,
-        parser: (RawValueInput) -> ZapretArgument<*, *>?,
+        parser: (RawValueInput) -> AnyZapretArgument?,
         vararg executableTypes: ExecutableType,
     ) : this(
         cliKey = cliKey,
@@ -127,17 +127,17 @@ enum class ArgumentKey(
             getMapForExecType(ExecutableType.Winws)
         }
 
-        private fun parseForTpws(cliKey: String, value: RawValueInput): ZapretArgument<*, *>? {
+        private fun parseForTpws(cliKey: String, value: RawValueInput): AnyZapretArgument? {
             val parser = tpwsArgumentsMap[cliKey]?.parser
             return parser?.invoke(value)
         }
 
-        private fun parseForNfqs(cliKey: String, value: RawValueInput): ZapretArgument<*, *>? {
+        private fun parseForNfqs(cliKey: String, value: RawValueInput): AnyZapretArgument? {
             val parser = nfqsArgumentsMap[cliKey]?.parser
             return parser?.invoke(value)
         }
 
-        private fun parseForWinws(cliKey: String, value: RawValueInput): ZapretArgument<*, *>? {
+        private fun parseForWinws(cliKey: String, value: RawValueInput): AnyZapretArgument? {
             val parser = winwsArgumentsMap[cliKey]?.parser
             return parser?.invoke(value)
         }

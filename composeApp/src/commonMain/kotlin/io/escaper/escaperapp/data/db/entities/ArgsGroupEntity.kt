@@ -5,7 +5,7 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import io.escaper.escaperapp.domain.args.ZapretArgument
+import io.escaper.escaperapp.domain.args.AnyZapretArgument
 
 @Entity(
     tableName = "argsGroups",
@@ -24,5 +24,5 @@ internal data class ArgsGroupEntity(
     val id: String,
     val strategyId: String,
     val indexInStrategy: Int,
-    val args: List<ZapretArgument<*, *>>,
+    val args: List<AnyZapretArgument>,
 )
