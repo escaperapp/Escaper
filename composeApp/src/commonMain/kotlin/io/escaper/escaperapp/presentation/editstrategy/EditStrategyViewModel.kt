@@ -114,7 +114,7 @@ data class EditStrategyState(
     companion object {
         val Initial = EditStrategyState(
             strategy = null,
-            argumentEditState = EditArgumentState.Missing,
+            argumentEditState = Missing,
             executableType = PlatformProvider.platform.executableType
         )
     }
