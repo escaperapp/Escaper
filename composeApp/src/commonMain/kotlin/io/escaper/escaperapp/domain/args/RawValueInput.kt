@@ -35,3 +35,7 @@ sealed interface RawValueInput {
     fun asString(): StringInput? = this as? StringInput
 }
 
+fun RawValueInput.StringInput?.toStringValue(): StringValue? {
+    return this?.value?.let(::StringValue)
+}
+

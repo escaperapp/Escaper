@@ -32,6 +32,23 @@ sealed interface ListValue : ArgValue<List<String>> {
     override fun toCli(): String = rawValue.joinToString(ValuesListDelimiter)
 }
 
+sealed interface PairValue<A, B> : ArgValue<Pair<A, B>> {
+    override fun toCli(): String {
+        return when {
+            rawValue.first == null && rawValue.second == null -> ""
+            rawValue.first != null && rawValue.second == null -> rawValue.first.toString()
+            rawValue.first == null && rawValue.second != null -> rawValue.second.toString()
+            else -> "${rawValue.first}:${rawValue.second}"
+        }
+    }
+}
+
+private data class PairValueImpl<A, B>(
+    override val rawValue: Pair<A, B>,
+) : PairValue<A, B>
+
+fun <A, B> PairValue(rawValue: Pair<A, B>): PairValue<A, B> = PairValueImpl(rawValue)
+
 internal enum class NfwsDebugMode(
     override val rawValue: Int,
 ) : IntValue {
