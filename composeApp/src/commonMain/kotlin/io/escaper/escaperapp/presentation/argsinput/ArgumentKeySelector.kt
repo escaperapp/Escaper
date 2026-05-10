@@ -52,6 +52,7 @@ private fun ArgumentKeyItem(
     key: ArgumentKey,
     onSelectKey: (ArgumentKey) -> Unit,
 ) {
+    val description = key.toDescription() ?: return
     Row(
         Modifier
             .fillMaxWidth()
@@ -63,14 +64,14 @@ private fun ArgumentKeyItem(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = stringResource(key.toDescription()),
+            text = stringResource(description),
             style = EscaperTheme.typography.bodyLarge,
             color = EscaperTheme.colors.mainText
         )
     }
 }
 
-internal fun ArgumentKey.toDescription(): StringResource = when (this) {
+internal fun ArgumentKey.toDescription(): StringResource? = when (this) {
     ArgumentKey.TpwsDebugModeArg -> EscaperRes.string.tpws_debug_mode_description
     ArgumentKey.DryRunArg -> EscaperRes.string.dry_run_flag_description
     ArgumentKey.VersionArg -> EscaperRes.string.version_flag_description
@@ -82,4 +83,5 @@ internal fun ArgumentKey.toDescription(): StringResource = when (this) {
     ArgumentKey.BindLinkLocalArg -> EscaperRes.string.bind_linklocal_arg_description
     ArgumentKey.BindIface4Arg -> EscaperRes.string.bind_iface4_arg_description
     ArgumentKey.BindIface6Arg -> EscaperRes.string.bind_iface6_arg_description
+    ArgumentKey.NewArg -> null
 }

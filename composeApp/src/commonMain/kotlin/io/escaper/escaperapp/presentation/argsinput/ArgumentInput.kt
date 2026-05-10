@@ -60,6 +60,8 @@ internal fun ArgumentInput(
             ArgumentKey.BindIface4Arg,
             ArgumentKey.BindIface6Arg,
                 -> Unit
+
+            ArgumentKey.NewArg -> Unit
         }
         Button(
             onClick = {

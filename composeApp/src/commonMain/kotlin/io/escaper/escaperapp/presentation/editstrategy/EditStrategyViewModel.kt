@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import io.escaper.escaperapp.data.StrategyRepository
 import io.escaper.escaperapp.domain.ExecutableType
 import io.escaper.escaperapp.domain.args.AnyZapretArgument
-import io.escaper.escaperapp.domain.mappers.splitByNew
 import io.escaper.escaperapp.domain.mappers.splitToGroupsByNew
 import io.escaper.escaperapp.navigation.StrategyEditMode
 import io.escaper.escaperapp.platform.PlatformProvider
