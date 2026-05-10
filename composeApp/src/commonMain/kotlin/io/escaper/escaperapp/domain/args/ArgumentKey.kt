@@ -1,6 +1,7 @@
 package io.escaper.escaperapp.domain.args
 
 import io.escaper.escaperapp.domain.ExecutableType
+import io.escaper.escaperapp.domain.args.tpws.DaemonArgument
 import io.escaper.escaperapp.domain.args.tpws.DryRunArgument
 import io.escaper.escaperapp.domain.args.tpws.PidFileArgument
 import io.escaper.escaperapp.domain.args.tpws.TpwsDebugArgument
@@ -32,7 +33,7 @@ enum class ArgumentKey(
     ),
     DaemonArg(
         cliKey = "daemon",
-        parser = { VersionArgument },
+        parser = { DaemonArgument },
         ExecutableType.Tpws,
         ExecutableType.Nfqs
     ),
@@ -50,7 +51,7 @@ enum class ArgumentKey(
     constructor(
         cliKey: String,
         parser: (RawValueInput) -> ZapretArgument<*, *>?,
-        vararg executableTypes:  ExecutableType,
+        vararg executableTypes: ExecutableType,
     ) : this(
         cliKey = cliKey,
         parser = parser,
