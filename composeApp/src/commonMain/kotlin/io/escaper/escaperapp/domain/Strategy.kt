@@ -1,7 +1,6 @@
 package io.escaper.escaperapp.domain
 
 import io.escaper.escaperapp.domain.args.AnyZapretArgument
-import io.escaper.escaperapp.domain.args.ZapretArgument
 import io.escaper.escaperapp.domain.utils.newUuid
 
 data class Strategy(
