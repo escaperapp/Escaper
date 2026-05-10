@@ -15,4 +15,15 @@
     <string name="edit_strategy_header">Стратегия %1$s</string>
     <string name="add_strategy_header">Добавление стратегии</string>
     <string name="argument_input_save_label">Сохранить</string>
+    <string name="tpws_debug_mode_description">Уровень отладочного логгирования</string>
+    <string name="dry_run_flag_description">Использовать ли пробный запуск</string>
+    <string name="version_flag_description">Вывести версию в терминал и завершить</string>
+    <string name="daemon_flag_description">Запустить как фоновую задачу (демон)</string>
+    <string name="pidfile_arg_description">Вывести ID процесса в файл</string>
+    <string name="user_arg_description">Запустить с username пользователя</string>
+    <string name="uid_arg_description">Укзать UID and GID процесса в системе Unix</string>
+    <string name="bind_addr_arg_description">Сетевой адрес для привязки и прослушивания</string>
+    <string name="bind_linklocal_arg_description">Режим привязки IPv6 link-local адресов</string>
+    <string name="bind_iface4_arg_description">Привязаться к первому IPv4-адресу сетевого интерфейса</string>
+    <string name="bind_iface6_arg_description">Привязаться к первому IPv6-адресу сетевого интерфейса</string>
 </resources>

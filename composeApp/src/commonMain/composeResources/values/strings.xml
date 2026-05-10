@@ -15,4 +15,15 @@
     <string name="no_custom_strategies_hint">You haven\'t added any custom strategies yet</string>
     <string name="add_strategy">Add strategy</string>
     <string name="argument_input_save_label">Save</string>
+    <string name="tpws_debug_mode_description">Debug logging level</string>
+    <string name="dry_run_flag_description">Whether to use dry run mode</string>
+    <string name="version_flag_description">Whether to show version and exit</string>
+    <string name="daemon_flag_description">Whether to launch as a daemon</string>
+    <string name="pidfile_arg_description">Output process ID to file</string>
+    <string name="user_arg_description">Launch with specific username</string>
+    <string name="uid_arg_description">Specify Unix UID and GID of the process</string>
+    <string name="bind_addr_arg_description">Network address to bind and listen on</string>
+    <string name="bind_linklocal_arg_description">IPv6 link-local address binding preference</string>
+    <string name="bind_iface4_arg_description">Bind to the first IPv4 address of a network interface</string>
+    <string name="bind_iface6_arg_description">Bind to the first IPv6 address of a network interface</string>
 </resources>

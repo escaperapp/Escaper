@@ -1,12 +1,22 @@
 package io.escaper.escaperapp.presentation.editstrategy
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import escaper.composeapp.generated.resources.EscaperRes
 import escaper.composeapp.generated.resources.add_strategy_header
 import escaper.composeapp.generated.resources.edit_strategy_header
 import io.escaper.escaperapp.navigation.LocalNavController
 import io.escaper.escaperapp.navigation.StrategyEditMode
+import io.escaper.escaperapp.presentation.argsinput.ArgumentInputSelector
 import io.escaper.escaperapp.presentation.common.EscaperTheme
 import io.escaper.escaperapp.presentation.components.topbar.EscaperTopBar
 import org.jetbrains.compose.resources.stringResource
@@ -21,15 +31,20 @@ internal fun EditStrategyScreen(
     val viewModel: EditStrategyViewModel = koinViewModel {
         parametersOf(mode)
     }
+    val state by viewModel.state.collectAsStateWithLifecycle()
     EditStrategyContent(
         mode = mode,
-        onBack = navController::navigateUp
+        state = state,
+        onBack = navController::navigateUp,
+        onEvent = viewModel::onEvent
     )
 }
 
 @Composable
 private fun EditStrategyContent(
     mode: StrategyEditMode,
+    state: EditStrategyState,
+    onEvent: (StrategyEditEvent) -> Unit,
     onBack: () -> Unit,
 ) {
     Scaffold(
@@ -42,8 +57,34 @@ private fun EditStrategyContent(
         contentColor = EscaperTheme.colors.mainText,
         containerColor = EscaperTheme.background
     ) { paddings ->
+        LazyColumn(
+            modifier = Modifier.padding(paddings),
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            itemsIndexed(
+                items = state.strategy?.groups.orEmpty(),
+                key = { _, group -> group.hashCode() },
+            ) { index, group ->
 
+            }
+        }
     }
+
+    val editState = state.argumentEditState
+    ArgumentInputSelector(
+        isVisible = state.argumentEditState.isVisible,
+        executableType = state.executableType,
+        initialArgument = (editState as? EditArgumentState.EditExisting)?.argument,
+        onSelect = { argument ->
+            onEvent(
+                StrategyEditEvent.OnAddArgument(
+                    groupIndex = editState.groupIndex,
+                    argument = argument
+                )
+            )
+        }
+    )
 }
 
 @Composable

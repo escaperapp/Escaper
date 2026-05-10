@@ -98,6 +98,13 @@ enum class ArgumentKey(
         },
         ExecutableType.Tpws
     ),
+    NewArg(
+        cliKey = "new",
+        parser = { NewArgument },
+        ExecutableType.Tpws,
+        ExecutableType.Nfqs,
+        ExecutableType.Winws
+    )
     ;
 
     constructor(
