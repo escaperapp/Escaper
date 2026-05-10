@@ -14,4 +14,5 @@
     <string name="my_strategies_label">My strategies</string>
     <string name="no_custom_strategies_hint">You haven\'t added any custom strategies yet</string>
     <string name="add_strategy">Add strategy</string>
+    <string name="argument_input_save_label">Save</string>
 </resources>
