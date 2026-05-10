@@ -10,12 +10,6 @@ sealed interface ZapretArgument<R : Any, V : ArgValue<R>> {
 
     fun asStringArg(): String = "$ArgPrefix$name$KeyValueDelimiter${value.toCli()}"
 
-    val isWinwsCompatible: Boolean get() = false
-
-    val isNfqsCompatible: Boolean get() = false
-
-    val isTpwsCompatible: Boolean get() = false
-
     fun isCompatibleWithExecutable(
         type: ExecutableType,
     ): Boolean {
@@ -93,3 +87,12 @@ sealed interface ZapretArgument<R : Any, V : ArgValue<R>> {
         }
     }
 }
+
+inline val ZapretArgument<*, *>.isWinwsCompatible: Boolean
+    get() = ExecutableType.Winws in name.executableTypes
+
+inline val ZapretArgument<*, *>.isNfqsCompatible: Boolean
+    get() = ExecutableType.Nfqs in name.executableTypes
+
+inline val ZapretArgument<*, *>.isTpwsCompatible: Boolean
+    get() = ExecutableType.Tpws in name.executableTypes

@@ -22,6 +22,12 @@ sealed interface StringValue : ArgValue<String> {
     override fun toCli(): String = rawValue
 }
 
+private data class StringValueImpl(
+    override val rawValue: String,
+) : StringValue
+
+fun StringValue(rawValue: String): StringValue = StringValueImpl(rawValue)
+
 sealed interface ListValue : ArgValue<List<String>> {
     override fun toCli(): String = rawValue.joinToString(ValuesListDelimiter)
 }

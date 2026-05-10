@@ -1,23 +1,65 @@
 package io.escaper.escaperapp.domain.args
 
 import io.escaper.escaperapp.domain.ExecutableType
+import io.escaper.escaperapp.domain.args.tpws.DryRunArgument
+import io.escaper.escaperapp.domain.args.tpws.PidFileArgument
 import io.escaper.escaperapp.domain.args.tpws.TpwsDebugArgument
+import io.escaper.escaperapp.domain.args.tpws.VersionArgument
 
 enum class ArgumentKey(
     val cliKey: String,
-    val executableType: ExecutableType,
+    val executableTypes: Set<ExecutableType>,
     val parser: (RawValueInput) -> ZapretArgument<*, *>?
 ) {
     TpwsDebugModeArg(
         cliKey = "debug",
-        executableType = ExecutableType.Tpws,
-        parser = { value -> TpwsDebugMode.fromCli(value)?.let(::TpwsDebugArgument) }
+        parser = { value ->
+            TpwsDebugMode.fromCli(value)?.let(::TpwsDebugArgument)
+        },
+        ExecutableType.Tpws,
     ),
+    DryRunArg(
+        cliKey = "dry-run",
+        parser = { DryRunArgument },
+        ExecutableType.Tpws,
+        ExecutableType.Nfqs
+    ),
+    VersionArg(
+        cliKey = "version",
+        parser = { VersionArgument },
+        ExecutableType.Tpws,
+        ExecutableType.Nfqs
+    ),
+    DaemonArg(
+        cliKey = "daemon",
+        parser = { VersionArgument },
+        ExecutableType.Tpws,
+        ExecutableType.Nfqs
+    ),
+    PidFileArg(
+        cliKey = "pidfile",
+        parser = { value ->
+            PidFileArgument.fromCli(value)?.let(::PidFileArgument)
+        },
+        ExecutableType.Tpws,
+        ExecutableType.Nfqs
+    ),
+
     ;
+
+    constructor(
+        cliKey: String,
+        parser: (RawValueInput) -> ZapretArgument<*, *>?,
+        vararg executableTypes:  ExecutableType,
+    ) : this(
+        cliKey = cliKey,
+        parser = parser,
+        executableTypes = executableTypes.toSet()
+    )
 
     companion object {
         private fun getMapForExecType(type: ExecutableType) = entries
-            .filter { it.executableType == type }
+            .filter { type in it.executableTypes }
             .associateBy { it.cliKey }
 
         private val tpwsArgumentsMap by lazy {

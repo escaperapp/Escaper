@@ -9,6 +9,4 @@ internal data class TpwsDebugArgument(
 ) : IntArgument<TpwsDebugMode>(
     name = ArgumentKey.TpwsDebugModeArg,
     value = value,
-) {
-    override val isTpwsCompatible: Boolean = true
-}
+)
