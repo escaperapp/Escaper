@@ -107,9 +107,8 @@ private fun EditStrategyContent(
 
     val editState = state.argumentEditState
     ArgumentInputSelector(
-        isVisible = state.argumentEditState.isVisible,
+        editState = editState,
         executableType = state.executableType,
-        initialArgument = (editState as? EditArgumentState.EditExisting)?.argument,
         onSelect = { argument ->
             onEvent(
                 StrategyEditEvent.OnAddArgument(

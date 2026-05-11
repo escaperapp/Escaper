@@ -41,6 +41,7 @@ internal class EditStrategyViewModel(
                         )
                     )
                 }
+                cancelArgumentEditing()
             }
 
             is StrategyEditEvent.InitiateArgumentCreation -> {
@@ -63,11 +64,7 @@ internal class EditStrategyViewModel(
             }
 
             StrategyEditEvent.CancelArgumentEditing -> {
-                _state.update {
-                    it.copy(
-                        argumentEditState = Missing
-                    )
-                }
+                cancelArgumentEditing()
             }
 
             StrategyEditEvent.AddGroup -> {
@@ -90,6 +87,14 @@ internal class EditStrategyViewModel(
                     )
                 }
             }
+        }
+    }
+
+    private fun cancelArgumentEditing() {
+        _state.update {
+            it.copy(
+                argumentEditState = Missing
+            )
         }
     }
 

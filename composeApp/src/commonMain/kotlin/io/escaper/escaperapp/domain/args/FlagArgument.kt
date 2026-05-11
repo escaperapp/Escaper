@@ -5,5 +5,5 @@ abstract class FlagArgument(
 ) : ZapretArgument<Nothing, ArgValue<Nothing>> {
     override val value: ArgValue<Nothing> = error("Flag arguments have no associated value")
 
-    override fun asStringArg(): String = "$ArgPrefix$name"
+    override fun asStringArg(): String = "$ArgPrefix${name.cliKey}"
 }

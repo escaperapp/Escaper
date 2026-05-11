@@ -8,7 +8,7 @@ sealed interface ZapretArgument<R : Any, V : ArgValue<R>> {
 
     val value: V
 
-    fun asStringArg(): String = "$ArgPrefix$name$KeyValueDelimiter${value.toCli()}"
+    fun asStringArg(): String = "$ArgPrefix${name.cliKey}$KeyValueDelimiter${value.toCli()}"
 
     fun isCompatibleWithExecutable(
         type: ExecutableType,

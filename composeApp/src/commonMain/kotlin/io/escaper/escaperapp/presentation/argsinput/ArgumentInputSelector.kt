@@ -17,20 +17,21 @@ import io.escaper.escaperapp.domain.ExecutableType
 import io.escaper.escaperapp.domain.args.AnyZapretArgument
 import io.escaper.escaperapp.domain.args.ArgumentKey
 import io.escaper.escaperapp.presentation.common.EscaperTheme
+import io.escaper.escaperapp.presentation.editstrategy.EditArgumentState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ArgumentInputSelector(
-    isVisible: Boolean,
+    editState: EditArgumentState,
     executableType: ExecutableType,
-    initialArgument: AnyZapretArgument?,
     onSelect: (AnyZapretArgument) -> Unit,
     onCancel: () -> Unit,
 ) {
-    val coroutineScope = rememberCoroutineScope()
-    if (isVisible) {
-        var selectedKey: ArgumentKey? by rememberSaveable {
+    if (editState.isVisible) {
+        val coroutineScope = rememberCoroutineScope()
+        val initialArgument = (editState as? EditArgumentState.EditExisting)?.argument
+        var selectedKey: ArgumentKey? by rememberSaveable(initialArgument) {
             mutableStateOf(initialArgument?.name)
         }
         val sheetState = rememberModalBottomSheetState(
@@ -50,7 +51,6 @@ internal fun ArgumentInputSelector(
                 onSelect(arg)
             }
         }
-
         ModalBottomSheet(
             sheetState = sheetState,
             containerColor = EscaperTheme.colors.backgroundElevated,
