@@ -2,6 +2,7 @@ package io.escaper.escaperapp.presentation.editstrategy
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -12,12 +13,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import escaper.composeapp.generated.resources.EscaperRes
+import escaper.composeapp.generated.resources.add_group_button_label
 import escaper.composeapp.generated.resources.add_strategy_header
 import escaper.composeapp.generated.resources.edit_strategy_header
 import io.escaper.escaperapp.navigation.LocalNavController
 import io.escaper.escaperapp.navigation.StrategyEditMode
 import io.escaper.escaperapp.presentation.argsinput.ArgumentInputSelector
 import io.escaper.escaperapp.presentation.common.EscaperTheme
+import io.escaper.escaperapp.presentation.components.button.EscaperButton
 import io.escaper.escaperapp.presentation.components.topbar.EscaperTopBar
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -68,6 +71,13 @@ private fun EditStrategyContent(
             ) { index, group ->
 
             }
+            item {
+                AddGroupButton(
+                    onClick = {
+
+                    }
+                )
+            }
         }
     }
 
@@ -101,4 +111,15 @@ private fun StrategyEditMode.toLabel(): String {
 @Composable
 private fun AddNewGroupInput() {
 
+}
+
+@Composable
+private fun AddGroupButton(
+    onClick: () -> Unit,
+) {
+    EscaperButton(
+        title = stringResource(EscaperRes.string.add_group_button_label),
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth(),
+    )
 }

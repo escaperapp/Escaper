@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.escaper.escaperapp.data.StrategiesRepository
 import io.escaper.escaperapp.domain.ExecutableType
+import io.escaper.escaperapp.domain.GroupOfArguments
 import io.escaper.escaperapp.domain.args.AnyZapretArgument
+import io.escaper.escaperapp.domain.utils.newUuid
 import io.escaper.escaperapp.navigation.StrategyEditMode
 import io.escaper.escaperapp.platform.PlatformProvider
 import io.escaper.escaperapp.presentation.editstrategy.EditArgumentState.CreateNew
@@ -56,6 +58,27 @@ internal class EditStrategyViewModel(
                     )
                 }
             }
+
+            StrategyEditEvent.AddGroup -> {
+                _state.update {
+                    val oldStrategy = it.strategy ?: return@update it
+                    val newGroups = oldStrategy.groups.toMutableList().apply {
+                        val newIndex = oldStrategy.groups.indices.lastOrNull()?.plus(1) ?: 0
+                        add(
+                            GroupOfArguments(
+                                id = newUuid(),
+                                indexInStrategy = newIndex,
+                                args = emptyList()
+                            )
+                        )
+                    }
+                    it.copy(
+                        strategy = oldStrategy.copy(
+                            groups = newGroups
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -103,6 +126,8 @@ sealed interface StrategyEditEvent {
         val groupIndex: Int,
         val argument: AnyZapretArgument,
     ) : StrategyEditEvent
+
+    object AddGroup : StrategyEditEvent
 }
 
 data class EditStrategyState(

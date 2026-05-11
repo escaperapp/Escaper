@@ -26,4 +26,5 @@
     <string name="bind_linklocal_arg_description">Режим привязки IPv6 link-local адресов</string>
     <string name="bind_iface4_arg_description">Привязаться к первому IPv4-адресу сетевого интерфейса</string>
     <string name="bind_iface6_arg_description">Привязаться к первому IPv6-адресу сетевого интерфейса</string>
+    <string name="add_group_button_label">Добавить группу</string>
 </resources>
