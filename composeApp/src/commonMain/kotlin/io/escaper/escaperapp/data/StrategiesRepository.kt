@@ -1,12 +1,14 @@
 package io.escaper.escaperapp.data
 
 import io.escaper.escaperapp.data.db.AppDatabase
+import io.escaper.escaperapp.data.db.entities.ArgsGroupEntity
 import io.escaper.escaperapp.data.db.entities.StrategyWithGroups
+import io.escaper.escaperapp.domain.GroupOfArguments
 import io.escaper.escaperapp.domain.Strategy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-internal class StrategyRepository(
+internal class StrategiesRepository(
     private val database: AppDatabase,
 ) {
     private val dao by lazy { database.getStrategyDao() }
@@ -28,6 +30,14 @@ internal class StrategyRepository(
         id = strategy.id,
         name = strategy.name,
         args = emptyList(),
-        zapretArgs = groups.flatMap { it.args }
+        groups = groups
+            .map { it.toDomainArgsGroup() }
+            .sortedBy { it.indexInStrategy }
+    )
+
+    private fun ArgsGroupEntity.toDomainArgsGroup() = GroupOfArguments(
+        id = id,
+        indexInStrategy = indexInStrategy,
+        args = args
     )
 }

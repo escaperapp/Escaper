@@ -9,7 +9,7 @@ import io.escaper.escaperapp.data.KtorKermitLogger
 import io.escaper.escaperapp.data.PathsProvider
 import io.escaper.escaperapp.data.ProxyManager
 import io.escaper.escaperapp.data.SettingsRepository
-import io.escaper.escaperapp.data.StrategyRepository
+import io.escaper.escaperapp.data.StrategiesRepository
 import io.escaper.escaperapp.data.ZapretUrlProvider
 import io.escaper.escaperapp.data.ZipExtractor
 import io.escaper.escaperapp.data.createDataStore
@@ -91,8 +91,8 @@ fun KoinApplication.installCommonModules() {
                     dataStore = get()
                 )
             }
-            single<StrategyRepository> {
-                StrategyRepository(
+            single<StrategiesRepository> {
+                StrategiesRepository(
                     database = get()
                 )
             }
@@ -127,12 +127,12 @@ fun KoinApplication.installCommonModules() {
             }
             viewModel {
                 MyStrategiesViewModel(
-                    strategyRepository = get()
+                    strategiesRepository = get()
                 )
             }
             viewModel { params ->
                 EditStrategyViewModel(
-                    strategyRepository = get(),
+                    strategiesRepository = get(),
                     editMode = params.get()
                 )
             }

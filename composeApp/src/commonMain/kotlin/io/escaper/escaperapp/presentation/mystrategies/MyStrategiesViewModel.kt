@@ -2,7 +2,7 @@ package io.escaper.escaperapp.presentation.mystrategies
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.escaper.escaperapp.data.StrategyRepository
+import io.escaper.escaperapp.data.StrategiesRepository
 import io.escaper.escaperapp.domain.Strategy
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import kotlin.jvm.JvmInline
 
 internal class MyStrategiesViewModel(
-    private val strategyRepository: StrategyRepository,
+    private val strategiesRepository: StrategiesRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(MyStrategiesState.Initial)
     val state = _state.asStateFlow()
@@ -23,7 +23,7 @@ internal class MyStrategiesViewModel(
 
     private fun subscribeToStrategies() {
         viewModelScope.launch {
-            strategyRepository.observeStrategies().collectLatest { strategies ->
+            strategiesRepository.observeStrategies().collectLatest { strategies ->
                 _state.update {
                     it.copy(strategies = strategies)
                 }
@@ -35,7 +35,7 @@ internal class MyStrategiesViewModel(
         when (event) {
             is MyStrategiesEvent.DeleteStrategy -> {
                 viewModelScope.launch {
-                    strategyRepository.deleteStrategy(event.strategy)
+                    strategiesRepository.deleteStrategy(event.strategy)
                 }
             }
 

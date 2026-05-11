@@ -3,10 +3,9 @@ package io.escaper.escaperapp.presentation.editstrategy
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.escaper.escaperapp.data.StrategyRepository
+import io.escaper.escaperapp.data.StrategiesRepository
 import io.escaper.escaperapp.domain.ExecutableType
 import io.escaper.escaperapp.domain.args.AnyZapretArgument
-import io.escaper.escaperapp.domain.mappers.splitToGroupsByNew
 import io.escaper.escaperapp.navigation.StrategyEditMode
 import io.escaper.escaperapp.platform.PlatformProvider
 import io.escaper.escaperapp.presentation.editstrategy.EditArgumentState.CreateNew
@@ -20,7 +19,7 @@ import kotlinx.coroutines.launch
 @Stable
 internal class EditStrategyViewModel(
     private val editMode: StrategyEditMode,
-    private val strategyRepository: StrategyRepository,
+    private val strategiesRepository: StrategiesRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(EditStrategyState.Initial)
     val state = _state.asStateFlow()
@@ -68,11 +67,11 @@ internal class EditStrategyViewModel(
                 }
 
                 is StrategyEditMode.Update -> {
-                    val dbStrategy = strategyRepository.getStrategyById(editMode.strategyId)
+                    val dbStrategy = strategiesRepository.getStrategyById(editMode.strategyId)
                     dbStrategy?.let {
                         TempStrategyModel(
                             name = it.name,
-                            groups = dbStrategy.zapretArgs.splitToGroupsByNew()
+                            groups = dbStrategy.groups
                         )
                     } ?: TempStrategyModel.createEmpty()
                 }
