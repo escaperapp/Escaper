@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import escaper.composeapp.generated.resources.EscaperRes
 import escaper.composeapp.generated.resources.bind_addr_arg_description
@@ -34,7 +36,9 @@ import org.jetbrains.compose.resources.stringResource
 internal fun ArgumentKeySelector(
     onSelectKey: (ArgumentKey) -> Unit,
 ) {
-    LazyColumn {
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         items(
             items = ArgumentKey.entries,
             key = { it.cliKey }
@@ -57,6 +61,7 @@ private fun ArgumentKeyItem(
         Modifier
             .fillMaxWidth()
             .height(48.dp)
+            .clip(RoundedCornerShape(50))
             .clickable {
                 onSelectKey(key)
             }.padding(horizontal = 16.dp),

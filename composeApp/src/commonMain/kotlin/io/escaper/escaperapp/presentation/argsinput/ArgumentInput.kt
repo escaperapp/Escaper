@@ -39,8 +39,9 @@ internal fun ArgumentInput(
             ArgumentKey.TpwsDebugModeArg -> {
                 RadioButtonInput(
                     options = TpwsDebugMode.entries,
+                    selectedOption = selectedArgument?.value as? TpwsDebugMode,
                     onSelectOption = { mode ->
-                        onSelectArgument(TpwsDebugArgument(mode))
+                        selectedArgument = TpwsDebugArgument(mode)
                     }
                 )
             }

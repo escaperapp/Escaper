@@ -29,7 +29,18 @@ internal class EditStrategyViewModel(
     fun onEvent(event: StrategyEditEvent) {
         when (event) {
             is StrategyEditEvent.OnAddArgument -> {
-
+                _state.update {
+                    val oldStrategy = it.strategy ?: return@update it
+                    val newGroups = oldStrategy.groups.toMutableList().apply {
+                        val oldGroup = getOrNull(event.groupIndex) ?: return@update it
+                        set(event.groupIndex, oldGroup.copy(args = oldGroup.args + event.argument))
+                    }
+                    it.copy(
+                        strategy = oldStrategy.copy(
+                            groups = newGroups
+                        )
+                    )
+                }
             }
 
             is StrategyEditEvent.InitiateArgumentCreation -> {

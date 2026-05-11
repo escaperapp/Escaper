@@ -6,7 +6,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -27,31 +26,31 @@ internal fun ArgumentInputSelector(
     executableType: ExecutableType,
     initialArgument: AnyZapretArgument?,
     onSelect: (AnyZapretArgument) -> Unit,
-    onCancel: () -> Unit = {},
+    onCancel: () -> Unit,
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var internalIsVisible by rememberSaveable {
-        mutableStateOf(isVisible)
-    }
     val coroutineScope = rememberCoroutineScope()
-    LaunchedEffect(isVisible) {
-        if (sheetState.isVisible && !isVisible) {
-            sheetState.hide()
+    if (isVisible) {
+        var selectedKey: ArgumentKey? by rememberSaveable {
+            mutableStateOf(initialArgument?.name)
         }
-        internalIsVisible = isVisible
-    }
-    val internalOnCancel: () -> Unit = {
-        coroutineScope.launch {
-            sheetState.hide()
-        }.invokeOnCompletion {
-            onCancel()
+        val sheetState = rememberModalBottomSheetState(
+            skipPartiallyExpanded = true
+        )
+        val internalOnCancel: () -> Unit = {
+            coroutineScope.launch {
+                sheetState.hide()
+            }.invokeOnCompletion {
+                onCancel()
+            }
         }
-    }
+        val internalOnSelect: (AnyZapretArgument) -> Unit = { arg ->
+            coroutineScope.launch {
+                sheetState.hide()
+            }.invokeOnCompletion {
+                onSelect(arg)
+            }
+        }
 
-    var selectedKey: ArgumentKey? by rememberSaveable {
-        mutableStateOf(initialArgument?.name)
-    }
-    if (internalIsVisible) {
         ModalBottomSheet(
             sheetState = sheetState,
             containerColor = EscaperTheme.colors.backgroundElevated,
@@ -65,7 +64,7 @@ internal fun ArgumentInputSelector(
                     ArgumentInput(
                         argumentType = key,
                         executableType = executableType,
-                        onSelectArgument = onSelect,
+                        onSelectArgument = internalOnSelect,
                     )
                 } ?: run {
                     ArgumentKeySelector(
