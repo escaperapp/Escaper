@@ -83,6 +83,7 @@ internal fun ArgumentInputSelector(
                     )
                 } else {
                     ArgumentKeySelector(
+                        executableType = executableType,
                         onSelectKey = {
                             selectedArgumentState.preInitByKey(it)
                         }

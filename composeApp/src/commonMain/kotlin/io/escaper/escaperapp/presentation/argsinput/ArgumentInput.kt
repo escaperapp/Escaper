@@ -40,9 +40,9 @@ internal fun ArgumentInput(
 ) {
     Column {
         when (argumentState.selectedValue ?: argumentState.preInitValue) {
-            is DaemonArgument -> TODO()
-            is DryRunArgument -> TODO()
-            is VersionArgument -> TODO()
+            is DaemonArgument -> Unit
+            is DryRunArgument -> Unit
+            is VersionArgument -> Unit
             is TpwsDebugArgument -> {
                 RadioButtonInput(
                     options = TpwsDebugMode.entries,
@@ -52,13 +52,13 @@ internal fun ArgumentInput(
                     }
                 )
             }
-            is UidArgument -> TODO()
-            is BindAddressArgument -> TODO()
-            is BindInterface4Argument -> TODO()
-            is BindInterface6Argument -> TODO()
-            is BindLinkLocalArgument -> TODO()
-            is PidFileArgument -> TODO()
-            is UserArgument -> TODO()
+            is UidArgument -> Unit
+            is BindAddressArgument -> Unit
+            is BindInterface4Argument -> Unit
+            is BindInterface6Argument -> Unit
+            is BindLinkLocalArgument -> Unit
+            is PidFileArgument -> Unit
+            is UserArgument -> Unit
             is NewArgument -> Unit
             null -> Unit
         }

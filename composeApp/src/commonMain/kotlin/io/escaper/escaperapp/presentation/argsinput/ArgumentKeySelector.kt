@@ -27,6 +27,7 @@ import escaper.composeapp.generated.resources.tpws_debug_mode_description
 import escaper.composeapp.generated.resources.uid_arg_description
 import escaper.composeapp.generated.resources.user_arg_description
 import escaper.composeapp.generated.resources.version_flag_description
+import io.escaper.escaperapp.domain.ExecutableType
 import io.escaper.escaperapp.domain.args.ArgumentKey
 import io.escaper.escaperapp.presentation.common.EscaperTheme
 import org.jetbrains.compose.resources.StringResource
@@ -34,13 +35,14 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun ArgumentKeySelector(
+    executableType: ExecutableType,
     onSelectKey: (ArgumentKey) -> Unit,
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(
-            items = ArgumentKey.entries,
+            items = ArgumentKey.getEntriesForExecType(executableType),
             key = { it.cliKey }
         ) { key ->
             ArgumentKeyItem(

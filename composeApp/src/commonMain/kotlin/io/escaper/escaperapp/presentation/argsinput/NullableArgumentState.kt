@@ -35,7 +35,7 @@ class NullableArgumentState {
     ) {
         preInitValue = when (key) {
             ArgumentKey.TpwsDebugModeArg -> {
-                 TpwsDebugArgument(TpwsDebugMode.QUIET)
+                TpwsDebugArgument(TpwsDebugMode.QUIET)
             }
 
             ArgumentKey.DryRunArg -> DryRunArgument
@@ -79,14 +79,20 @@ class NullableArgumentState {
         preInitValue = argument
     }
 
+    override fun toString(): String {
+        return "NullableArgumentState(preInitValue=$preInitValue, selectedValue=$selectedValue)"
+    }
+
     companion object {
         fun Saver(
             executableType: ExecutableType,
-        ): Saver<NullableArgumentState, Array<String>> = Saver(
-            save = { arrayOf(
-                it.preInitValue?.asStringArg().orEmpty(),
-                it.selectedValue?.asStringArg().orEmpty()
-            ) },
+        ): Saver<NullableArgumentState, Array<String?>> = Saver(
+            save = {
+                arrayOf(
+                    it.preInitValue?.asStringArg(),
+                    it.selectedValue?.asStringArg()
+                )
+            },
             restore = { rawValue ->
                 NullableArgumentState().apply {
                     preInitValue = ZapretArgument.fromStringArg(

@@ -107,20 +107,22 @@ enum class ArgumentKey(
     )
 
     companion object {
-        private fun getMapForExecType(type: ExecutableType) = entries
+        private fun getListForExecType(type: ExecutableType) = entries
             .filter { type in it.executableTypes }
-            .associateBy { it.cliKey }
 
-        private val tpwsArgumentsMap by lazy {
-            getMapForExecType(ExecutableType.Tpws)
-        }
+        private val tpwsArguments = getListForExecType(ExecutableType.Tpws)
+        private val nfqsArguments = getListForExecType(ExecutableType.Nfqs)
+        private val winwsArguments = getListForExecType(ExecutableType.Winws)
+        private val tpwsArgumentsMap = tpwsArguments.associateBy { it.cliKey }
+        private val nfqsArgumentsMap = nfqsArguments.associateBy { it.cliKey }
+        private val winwsArgumentsMap = winwsArguments.associateBy { it.cliKey }
 
-        private val nfqsArgumentsMap by lazy {
-            getMapForExecType(ExecutableType.Nfqs)
-        }
-
-        private val winwsArgumentsMap by lazy {
-            getMapForExecType(ExecutableType.Winws)
+        fun getEntriesForExecType(
+            executableType: ExecutableType,
+        ) = when (executableType) {
+            ExecutableType.Winws -> winwsArguments
+            ExecutableType.Tpws -> tpwsArguments
+            ExecutableType.Nfqs -> nfqsArguments
         }
 
         private fun parseForTpws(cliKey: String, value: RawValueInput): AnyZapretArgument? {

@@ -14,6 +14,8 @@
     <string name="my_strategies_label">My strategies</string>
     <string name="no_custom_strategies_hint">You haven\'t added any custom strategies yet</string>
     <string name="add_strategy">Add strategy</string>
+    <string name="add_strategy_header">Adding strategy</string>
+    <string name="edit_strategy_header">Strategy %1$s</string>
     <string name="argument_input_save_label">Save</string>
     <string name="tpws_debug_mode_description">Debug logging level</string>
     <string name="dry_run_flag_description">Whether to use dry run mode</string>
