@@ -31,19 +31,36 @@ internal fun ArgumentInput(
     onConfirmArgument: (AnyZapretArgument) -> Unit,
 ) {
     Column {
-        when (argumentState.selectedValue ?: argumentState.preInitValue) {
-            is DaemonArgument -> Unit
-            is DryRunArgument -> Unit
-            is VersionArgument -> Unit
+        when (val baseValue = argumentState.anyValue) {
+            DaemonArgument,
+            DryRunArgument,
+            VersionArgument -> {
+                val description = baseValue.name.toDescription() ?: return
+                ToggleSwitcherInput(
+                    title = stringResource(description),
+                    isSelected = argumentState.selectedValue != null,
+                    onValueChange = { isSelected ->
+                        argumentState.setSelected(
+                            if (isSelected) {
+                                argumentState.preInitValue
+                            } else {
+                                null
+                            }
+                        )
+                    }
+                )
+            }
+
             is TpwsDebugArgument -> {
                 RadioButtonInput(
                     options = TpwsDebugMode.entries,
                     selectedOption = argumentState.typedSelectedValue(),
                     onSelectOption = { mode ->
-                        argumentState.selectedValue = TpwsDebugArgument(mode)
+                        argumentState.setSelected(TpwsDebugArgument(mode))
                     }
                 )
             }
+
             is UidArgument -> Unit
             is BindAddressArgument -> Unit
             is BindInterface4Argument -> Unit
@@ -51,6 +68,7 @@ internal fun ArgumentInput(
             is BindLinkLocalArgument -> Unit
             is PidFileArgument -> Unit
             is UserArgument -> Unit
+
             is NewArgument -> Unit
             null -> Unit
         }

@@ -26,9 +26,13 @@ import io.escaper.escaperapp.domain.args.ZapretArgument
 @Stable
 class NullableArgumentState {
     var preInitValue: AnyZapretArgument? by mutableStateOf(null)
+        private set
     var selectedValue: AnyZapretArgument? by mutableStateOf(null)
+        private set
 
     inline fun <reified T> typedSelectedValue(): T? = selectedValue as? T
+
+    inline val anyValue get() = selectedValue ?: preInitValue
 
     fun preInitByKey(
         key: ArgumentKey,
@@ -77,6 +81,11 @@ class NullableArgumentState {
         argument: AnyZapretArgument?,
     ) {
         preInitValue = argument
+        selectedValue = argument
+    }
+
+    fun setSelected(value: AnyZapretArgument?) {
+        selectedValue = value
     }
 
     override fun toString(): String {
