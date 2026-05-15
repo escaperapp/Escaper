@@ -20,6 +20,10 @@ sealed interface DoubleValue : ArgValue<Double> {
 
 sealed interface StringValue : ArgValue<String> {
     override fun toCli(): String = rawValue
+
+    companion object {
+        val Empty = StringValue("")
+    }
 }
 
 private data class StringValueImpl(

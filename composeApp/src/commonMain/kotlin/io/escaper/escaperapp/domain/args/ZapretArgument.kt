@@ -25,9 +25,12 @@ sealed interface ZapretArgument<R : Any, V : ArgValue<R>> {
         private val DoubleRegex = Regex("""-?\d+\.\d+""")
 
         fun fromStringArg(
-            arg: String,
+            arg: String?,
             executableType: ExecutableType,
         ): AnyZapretArgument? {
+            if (arg.isNullOrBlank()) {
+                return null
+            }
             if (!arg.startsWith(ArgPrefix)) {
                 return null
             }

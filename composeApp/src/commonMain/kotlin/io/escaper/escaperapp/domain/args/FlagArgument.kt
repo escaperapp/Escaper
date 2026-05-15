@@ -1,9 +1,9 @@
 package io.escaper.escaperapp.domain.args
 
-abstract class FlagArgument(
+sealed class FlagArgument(
     override val name: ArgumentKey,
-) : ZapretArgument<Nothing, ArgValue<Nothing>> {
-    override val value: ArgValue<Nothing> = error("Flag arguments have no associated value")
+) : ZapretArgument<Any, ArgValue<Any>> {
+    override val value: ArgValue<Any> = error("Flag arguments have no associated value")
 
     override fun asStringArg(): String = "$ArgPrefix${name.cliKey}"
 }

@@ -1,17 +1,6 @@
 package io.escaper.escaperapp.domain.args
 
 import io.escaper.escaperapp.domain.ExecutableType
-import io.escaper.escaperapp.domain.args.tpws.BindAddressArgument
-import io.escaper.escaperapp.domain.args.tpws.BindInterface4Argument
-import io.escaper.escaperapp.domain.args.tpws.BindInterface6Argument
-import io.escaper.escaperapp.domain.args.tpws.BindLinkLocalArgument
-import io.escaper.escaperapp.domain.args.tpws.DaemonArgument
-import io.escaper.escaperapp.domain.args.tpws.DryRunArgument
-import io.escaper.escaperapp.domain.args.tpws.PidFileArgument
-import io.escaper.escaperapp.domain.args.tpws.TpwsDebugArgument
-import io.escaper.escaperapp.domain.args.tpws.UidArgument
-import io.escaper.escaperapp.domain.args.tpws.UserArgument
-import io.escaper.escaperapp.domain.args.tpws.VersionArgument
 
 enum class ArgumentKey(
     val cliKey: String,

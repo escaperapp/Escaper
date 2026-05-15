@@ -1,10 +1,4 @@
-package io.escaper.escaperapp.domain.args.tpws
-
-import io.escaper.escaperapp.domain.args.ArgValueParser
-import io.escaper.escaperapp.domain.args.ArgumentKey
-import io.escaper.escaperapp.domain.args.RawValueInput
-import io.escaper.escaperapp.domain.args.StringArgument
-import io.escaper.escaperapp.domain.args.StringValue
+package io.escaper.escaperapp.domain.args
 
 data class UserArgument(
     override val value: StringValue,
