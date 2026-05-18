@@ -16,6 +16,7 @@ import io.escaper.escaperapp.domain.ExecutableType
 import io.escaper.escaperapp.domain.args.AnyZapretArgument
 import io.escaper.escaperapp.presentation.common.EscaperTheme
 import io.escaper.escaperapp.presentation.editstrategy.EditArgumentState
+import io.escaper.escaperapp.presentation.editstrategy.StrategyEditEvent
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,67 +24,96 @@ import kotlinx.coroutines.launch
 internal fun ArgumentInputSelector(
     editState: EditArgumentState,
     executableType: ExecutableType,
-    onSelect: (AnyZapretArgument) -> Unit,
+    onSelect: (StrategyEditEvent) -> Unit,
     onCancel: () -> Unit,
 ) {
-    if (editState.isVisible) {
-        val coroutineScope = rememberCoroutineScope()
-        val initialArgument = (editState as? EditArgumentState.EditExisting)?.argument
+    when (editState) {
+        EditArgumentState.Missing -> Unit
+        is EditArgumentState.Visible -> {
+            val initialArgument = editState.argument
+            val coroutineScope = rememberCoroutineScope()
 
-        val sheetState = rememberModalBottomSheetState(
-            skipPartiallyExpanded = true
-        )
-        val internalOnCancel: () -> Unit = {
-            coroutineScope.launch {
-                sheetState.hide()
-            }.invokeOnCompletion {
-                onCancel()
+            val sheetState = rememberModalBottomSheetState(
+                skipPartiallyExpanded = true
+            )
+            val internalOnCancel: () -> Unit = {
+                coroutineScope.launch {
+                    sheetState.hide()
+                }.invokeOnCompletion {
+                    onCancel()
+                }
             }
-        }
-        val internalOnSelect: (AnyZapretArgument) -> Unit = { arg ->
-            coroutineScope.launch {
-                sheetState.hide()
-            }.invokeOnCompletion {
-                onSelect(arg)
-            }
-        }
-
-        val selectedArgumentState = rememberSaveable(
-            initialArgument,
-            saver = NullableArgumentState.Saver(executableType)
-        ) {
-            NullableArgumentState().apply {
-                initByPreselected(
-                    initialArgument
-                )
-            }
-        }
-        ModalBottomSheet(
-            sheetState = sheetState,
-            containerColor = EscaperTheme.background,
-            contentColor = EscaperTheme.colors.mainText,
-            dragHandle = {
-                BottomSheetDefaults.DragHandle(
-                    color = EscaperTheme.colors.mainText
-                )
-            },
-            onDismissRequest = internalOnCancel
-        ) {
-            Column(
-                Modifier.padding(16.dp).animateContentSize()
-            ) {
-                if (selectedArgumentState.preInitValue != null) {
-                    ArgumentInput(
-                        argumentState = selectedArgumentState,
-                        onConfirmArgument = internalOnSelect,
-                    )
-                } else {
-                    ArgumentKeySelector(
-                        executableType = executableType,
-                        onSelectKey = {
-                            selectedArgumentState.preInitByKey(it)
+            val internalOnSelect: (AnyZapretArgument?) -> Unit = { arg ->
+                coroutineScope.launch {
+                    sheetState.hide()
+                }.invokeOnCompletion {
+                    when (editState) {
+                        is EditArgumentState.CreateNew -> {
+                            arg?.let {
+                                onSelect(
+                                    StrategyEditEvent.OnAddArgument(
+                                        groupIndex = editState.groupIndex,
+                                        argument = arg
+                                    )
+                                )
+                            }
                         }
+                        is EditArgumentState.EditExisting -> {
+                            onSelect(
+                                if (arg != null) {
+                                    StrategyEditEvent.OnAddArgument(
+                                        groupIndex = editState.groupIndex,
+                                        argument = arg
+                                    )
+                                } else {
+                                    StrategyEditEvent.OnDeleteArgument(
+                                        groupIndex = editState.groupIndex,
+                                        argumentIndex = editState.argumentIndex
+                                    )
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+
+            val selectedArgumentState = rememberSaveable(
+                initialArgument,
+                saver = NullableArgumentState.Saver(executableType)
+            ) {
+                NullableArgumentState().apply {
+                    initByPreselected(
+                        initialArgument
                     )
+                }
+            }
+            ModalBottomSheet(
+                sheetState = sheetState,
+                containerColor = EscaperTheme.background,
+                contentColor = EscaperTheme.colors.mainText,
+                dragHandle = {
+                    BottomSheetDefaults.DragHandle(
+                        color = EscaperTheme.colors.mainText
+                    )
+                },
+                onDismissRequest = internalOnCancel
+            ) {
+                Column(
+                    Modifier.padding(16.dp).animateContentSize()
+                ) {
+                    if (selectedArgumentState.preInitValue != null) {
+                        ArgumentInput(
+                            argumentState = selectedArgumentState,
+                            onConfirmArgument = internalOnSelect,
+                        )
+                    } else {
+                        ArgumentKeySelector(
+                            executableType = executableType,
+                            onSelectKey = {
+                                selectedArgumentState.preInitByKey(it)
+                            }
+                        )
+                    }
                 }
             }
         }

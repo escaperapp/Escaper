@@ -87,8 +87,14 @@ private fun EditStrategyContent(
             ) { index, group ->
                 NewGroupInput(
                     arguments = group.args,
-                    onEditArgument = { argument ->
-                        onEvent(StrategyEditEvent.InitiateArgumentEditing(index, argument))
+                    onEditArgument = { argIndex, argument ->
+                        onEvent(
+                            StrategyEditEvent.InitiateArgumentEditing(
+                                groupIndex = index,
+                                argumentIndex = argIndex,
+                                argument = argument
+                            )
+                        )
                     },
                     onAddArgument = {
                         onEvent(StrategyEditEvent.InitiateArgumentCreation(index))
@@ -109,14 +115,7 @@ private fun EditStrategyContent(
     ArgumentInputSelector(
         editState = editState,
         executableType = state.executableType,
-        onSelect = { argument ->
-            onEvent(
-                StrategyEditEvent.OnAddArgument(
-                    groupIndex = editState.groupIndex,
-                    argument = argument
-                )
-            )
-        },
+        onSelect = onEvent,
         onCancel = {
             onEvent(StrategyEditEvent.CancelArgumentEditing)
         }
@@ -137,7 +136,7 @@ private fun StrategyEditMode.toLabel(): String {
 @Composable
 private fun NewGroupInput(
     arguments: List<AnyZapretArgument>,
-    onEditArgument: (AnyZapretArgument) -> Unit,
+    onEditArgument: (Int, AnyZapretArgument) -> Unit,
     onAddArgument: () -> Unit,
 ) {
     val shape = RoundedCornerShape(20.dp)
@@ -156,14 +155,14 @@ private fun NewGroupInput(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        for (argument in arguments) {
+        arguments.forEachIndexed { index, argument ->
             Row(
                 modifier = Modifier
                     .height(40.dp)
                     .clip(RoundedCornerShape(50))
                     .background(EscaperTheme.colors.backgroundElevated)
                     .clickable {
-                        onEditArgument(argument)
+                        onEditArgument(index, argument)
                     }
                     .padding(horizontal = 8.dp),
                 verticalAlignment = Alignment.CenterVertically

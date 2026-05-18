@@ -44,6 +44,29 @@ internal class EditStrategyViewModel(
                 cancelArgumentEditing()
             }
 
+            is StrategyEditEvent.OnEditArgument -> {
+                _state.update {
+                    val oldStrategy = it.strategy ?: return@update it
+                    val newGroups = oldStrategy.groups.toMutableList().apply {
+                        val oldGroup = getOrNull(event.groupIndex) ?: return@update it
+                        set(
+                            event.groupIndex,
+                            oldGroup.copy(
+                                args = oldGroup.args.toMutableList().apply {
+                                    set(event.argumentIndex, event.argument)
+                                }
+                            )
+                        )
+                    }
+                    it.copy(
+                        strategy = oldStrategy.copy(
+                            groups = newGroups
+                        )
+                    )
+                }
+                cancelArgumentEditing()
+            }
+
             is StrategyEditEvent.InitiateArgumentCreation -> {
                 _state.update {
                     it.copy(
@@ -57,7 +80,8 @@ internal class EditStrategyViewModel(
                     it.copy(
                         argumentEditState = EditExisting(
                             groupIndex = event.groupIndex,
-                            argument = event.argument
+                            argument = event.argument,
+                            argumentIndex = event.argumentIndex
                         )
                     )
                 }
@@ -86,6 +110,21 @@ internal class EditStrategyViewModel(
                         )
                     )
                 }
+            }
+
+            is StrategyEditEvent.OnDeleteArgument -> {
+                _state.update {
+                    val oldStrategy = it.strategy ?: return@update it
+                    val newGroups = oldStrategy.groups.toMutableList().apply {
+                        removeAt(event.argumentIndex)
+                    }
+                    it.copy(
+                        strategy = oldStrategy.copy(
+                            groups = newGroups
+                        )
+                    )
+                }
+                cancelArgumentEditing()
             }
         }
     }
@@ -133,6 +172,7 @@ sealed interface StrategyEditEvent {
 
     data class InitiateArgumentEditing(
         val groupIndex: Int,
+        val argumentIndex: Int,
         val argument: AnyZapretArgument,
     ) : StrategyEditEvent
 
@@ -140,6 +180,17 @@ sealed interface StrategyEditEvent {
 
     data class OnAddArgument(
         val groupIndex: Int,
+        val argument: AnyZapretArgument,
+    ) : StrategyEditEvent
+
+    data class OnDeleteArgument(
+        val groupIndex: Int,
+        val argumentIndex: Int,
+    ) : StrategyEditEvent
+
+    data class OnEditArgument(
+        val groupIndex: Int,
+        val argumentIndex: Int,
         val argument: AnyZapretArgument,
     ) : StrategyEditEvent
 
@@ -161,24 +212,25 @@ data class EditStrategyState(
 }
 
 sealed interface EditArgumentState {
-    val isVisible: Boolean
     val groupIndex: Int
 
     object Missing : EditArgumentState {
-        override val isVisible: Boolean = false
         override val groupIndex: Int = 0
+    }
+
+    sealed interface Visible : EditArgumentState {
+        val argument: AnyZapretArgument?
     }
 
     data class CreateNew(
         override val groupIndex: Int,
-    ) : EditArgumentState {
-        override val isVisible: Boolean = true
+    ) : Visible {
+        override val argument: AnyZapretArgument? = null
     }
 
     data class EditExisting(
         override val groupIndex: Int,
-        val argument: AnyZapretArgument,
-    ) : EditArgumentState {
-        override val isVisible: Boolean = true
-    }
+        val argumentIndex: Int,
+        override val argument: AnyZapretArgument,
+    ) : Visible
 }
