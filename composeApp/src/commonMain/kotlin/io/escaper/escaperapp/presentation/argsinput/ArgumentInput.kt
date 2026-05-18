@@ -15,6 +15,7 @@ import io.escaper.escaperapp.domain.args.BindInterface6Argument
 import io.escaper.escaperapp.domain.args.BindLinkLocalArgument
 import io.escaper.escaperapp.domain.args.DaemonArgument
 import io.escaper.escaperapp.domain.args.DryRunArgument
+import io.escaper.escaperapp.domain.args.FlagArgument
 import io.escaper.escaperapp.domain.args.NewArgument
 import io.escaper.escaperapp.domain.args.PidFileArgument
 import io.escaper.escaperapp.domain.args.TpwsDebugArgument
@@ -28,10 +29,12 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 internal fun ArgumentInput(
     argumentState: NullableArgumentState,
-    onConfirmArgument: (AnyZapretArgument) -> Unit,
+    onConfirmArgument: (AnyZapretArgument?) -> Unit,
 ) {
+    val baseValue = argumentState.anyValue
+    val allowNullValue = baseValue is FlagArgument
     Column {
-        when (val baseValue = argumentState.anyValue) {
+        when (baseValue) {
             DaemonArgument,
             DryRunArgument,
             VersionArgument -> {
@@ -75,9 +78,9 @@ internal fun ArgumentInput(
         EscaperButton(
             title = stringResource(EscaperRes.string.argument_input_save_label),
             onClick = {
-                argumentState.selectedValue?.let(onConfirmArgument)
+                onConfirmArgument(argumentState.selectedValue)
             },
-            enabled = argumentState.selectedValue != null,
+            enabled = argumentState.selectedValue != null || allowNullValue,
             modifier = Modifier
                 .padding(top = 16.dp)
                 .fillMaxWidth()
