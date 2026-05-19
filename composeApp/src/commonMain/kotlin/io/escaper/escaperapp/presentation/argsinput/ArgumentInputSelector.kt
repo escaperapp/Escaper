@@ -61,8 +61,9 @@ internal fun ArgumentInputSelector(
                         is EditArgumentState.EditExisting -> {
                             onSelect(
                                 if (arg != null) {
-                                    StrategyEditEvent.OnAddArgument(
+                                    StrategyEditEvent.OnUpdateArgument(
                                         groupIndex = editState.groupIndex,
+                                        argumentIndex = editState.argumentIndex,
                                         argument = arg
                                     )
                                 } else {
@@ -83,7 +84,7 @@ internal fun ArgumentInputSelector(
             ) {
                 NullableArgumentState().apply {
                     initByPreselected(
-                        initialArgument
+                        argument = initialArgument
                     )
                 }
             }

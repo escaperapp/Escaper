@@ -44,6 +44,29 @@ internal class EditStrategyViewModel(
                 cancelArgumentEditing()
             }
 
+            is StrategyEditEvent.OnUpdateArgument -> {
+                _state.update {
+                    val oldStrategy = it.strategy ?: return@update it
+                    val newGroups = oldStrategy.groups.toMutableList().apply {
+                        val oldGroup = getOrNull(event.groupIndex) ?: return@update it
+                        set(
+                            event.groupIndex,
+                            oldGroup.copy(
+                                args = oldGroup.args.toMutableList().apply {
+                                    set(event.argumentIndex, event.argument)
+                                }
+                            )
+                        )
+                    }
+                    it.copy(
+                        strategy = oldStrategy.copy(
+                            groups = newGroups
+                        )
+                    )
+                }
+                cancelArgumentEditing()
+            }
+
             is StrategyEditEvent.OnEditArgument -> {
                 _state.update {
                     val oldStrategy = it.strategy ?: return@update it
@@ -116,7 +139,15 @@ internal class EditStrategyViewModel(
                 _state.update {
                     val oldStrategy = it.strategy ?: return@update it
                     val newGroups = oldStrategy.groups.toMutableList().apply {
-                        removeAt(event.argumentIndex)
+                        val oldGroup = getOrNull(event.groupIndex) ?: return@update it
+                        set(
+                            event.groupIndex,
+                            oldGroup.copy(
+                                args = oldGroup.args.toMutableList().apply {
+                                    removeAt(event.argumentIndex)
+                                }
+                            )
+                        )
                     }
                     it.copy(
                         strategy = oldStrategy.copy(
@@ -180,6 +211,12 @@ sealed interface StrategyEditEvent {
 
     data class OnAddArgument(
         val groupIndex: Int,
+        val argument: AnyZapretArgument,
+    ) : StrategyEditEvent
+
+    data class OnUpdateArgument(
+        val groupIndex: Int,
+        val argumentIndex: Int,
         val argument: AnyZapretArgument,
     ) : StrategyEditEvent
 

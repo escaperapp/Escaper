@@ -30,7 +30,7 @@ class NullableArgumentState {
     var selectedValue: AnyZapretArgument? by mutableStateOf(null)
         private set
 
-    inline fun <reified T> typedSelectedValue(): T? = selectedValue as? T
+    inline fun <reified T> typedSelectedValue(): T? = selectedValue?.value as? T
 
     inline val anyValue get() = selectedValue ?: preInitValue
 
