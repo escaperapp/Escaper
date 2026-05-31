@@ -10,9 +10,12 @@ class ZapretProxy {
 
     suspend fun startProxy(
         args: List<String>,
+        defaultPort: Int,
     ): Int = mutex.withLock {
+        val safeArgs = args.ensureRequiredArgs(defaultPort)
+        println("Starting tpws with args $safeArgs")
         TpwsBridge.run(
-            args = args.toTypedArray()
+            args = safeArgs.toTypedArray()
         )
     }
 
@@ -20,6 +23,24 @@ class ZapretProxy {
         return mutex.withLock {
             TpwsBridge.stop()
             0
+        }
+    }
+
+    private fun List<String>.ensureRequiredArgs(
+        defaultPort: Int,
+    ): List<String> {
+        val port = find { it.startsWith("--port") }
+        val portArg = if (port == null) {
+            "--port=$defaultPort"
+        } else {
+            null
+        }
+        return buildList {
+            add("tpws")
+            addAll(this@ensureRequiredArgs)
+            portArg?.let {
+                add(it)
+            }
         }
     }
 }

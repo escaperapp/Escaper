@@ -14,7 +14,9 @@ object TpwsBridge {
      *
      * Returns native exit code (0 = OK, non-zero = error).
      */
-    external fun run(args: Array<String>): Int
+    external fun run(
+        args: Array<String>
+    ): Int
 
     external fun stop()
 }

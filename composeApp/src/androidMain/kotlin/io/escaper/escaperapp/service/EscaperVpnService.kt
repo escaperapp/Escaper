@@ -29,6 +29,8 @@ import java.io.File
 internal const val START_ACTION = "start"
 internal const val STOP_ACTION = "stop"
 
+private const val DEFAULT_PORT = 1080
+
 class EscaperVpnService : LifecycleVpnService(), KoinComponent {
     private var proxyJob: Job? = null
     private var tunFd: ParcelFileDescriptor? = null
@@ -162,7 +164,10 @@ class EscaperVpnService : LifecycleVpnService(), KoinComponent {
         }
 
         proxyJob = lifecycleScope.launch(Dispatchers.IO) {
-            val code = zapretProxy.startProxy(strategy.args)
+            val code = zapretProxy.startProxy(
+                args = strategy.args,
+                defaultPort = DEFAULT_PORT
+            )
 
             if (code != 0) {
                 val msg = "Failed to start proxy, exit code $code"
@@ -199,7 +204,6 @@ class EscaperVpnService : LifecycleVpnService(), KoinComponent {
             throw IllegalStateException("VPN field not null")
         }
 
-        val port = 1080
         val dns = "1.1.1.1"
         val ipv6 = false
 
@@ -209,7 +213,7 @@ class EscaperVpnService : LifecycleVpnService(), KoinComponent {
         | socks5:
         |   mtu: 8500
         |   address: 127.0.0.1
-        |   port: $port
+        |   port: $DEFAULT_PORT
         |   udp: udp
         """.trimMargin("| ")
 
