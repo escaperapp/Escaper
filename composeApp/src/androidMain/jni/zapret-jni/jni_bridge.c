@@ -1,6 +1,7 @@
 #include <jni.h>
 #include <stdlib.h>
 #include <string.h>
+#include "tpws_log.h"
 
 #include "tpws_control.h"
 
@@ -35,8 +36,9 @@ Java_io_escaper_escaperapp_nativebridge_TpwsBridge_run(
 {
     int argc;
     char **argv = jni_to_argv(env, args, &argc);
-
+    LOGI("JNI: before tpws_start");
     tpws_start(argc, argv);
+    LOGI("JNI: after tpws_start");
 
     /* JNI returns immediately */
     return 0;

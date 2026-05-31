@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "tpws_log.h"
+
 /* zapret internal API */
 extern int main(int argc, char *argv[]);
 extern void resolver_deinit(void);
@@ -19,16 +21,19 @@ static int saved_argc = 0;
 static void* worker_thread(void *arg)
 {
     int rc;
-
+    LOGI("JNI: before setjmp");
     int jmp_rc = setjmp(tpws_exit_env);
 
     if (jmp_rc == 0) {
+        LOGI("JNI: jmp_rc zero starting main");
         rc = main(saved_argc, saved_argv);
         (void)rc;
     } else {
+        LOGI("JNI: jmp_rc not zero");
         /* exit() intercepted here */
     }
 
+    LOGI("JNI: exiting worker thread");
     running = false;
     return NULL;
 }
@@ -51,15 +56,19 @@ void tpws_start(int argc, char **argv)
 void tpws_stop(void)
 {
     if (!running) return;
+    LOGI("JNI: before resolver deinit");
 
     /* 1. trigger internal zapret shutdown */
     resolver_deinit();
+    LOGI("JNI: after resolver deinit");
 
     /* 2. in case main loop is blocked */
     pthread_kill(worker, SIGUSR1);
+    LOGI("JNI: after pthread kill");
 
     /* 3. wait for thread exit */
     pthread_join(worker, NULL);
+    LOGI("JNI: after pthread join");
 
     /* 4. cleanup argv */
     for (int i = 0; i < saved_argc; i++) {
@@ -67,6 +76,7 @@ void tpws_stop(void)
     }
     free(saved_argv);
     saved_argv = NULL;
+    LOGI("JNI: cleanup completed");
 
     running = false;
 }
