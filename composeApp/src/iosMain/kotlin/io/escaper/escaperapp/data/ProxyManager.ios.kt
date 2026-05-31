@@ -1,10 +1,9 @@
 package io.escaper.escaperapp.data
 
 import io.escaper.escaperapp.domain.GetSelectedStrategyUseCase
-import kotlinx.coroutines.flow.StateFlow
 import io.escaper.escaperapp.domain.ProxyStartResult
 import io.escaper.escaperapp.domain.ProxyStopResult
-import io.escaper.escaperapp.domain.StrategiesFactory
+import kotlinx.coroutines.flow.StateFlow
 
 internal actual class ProxyManager actual constructor(
     pathsProvider: PathsProvider,

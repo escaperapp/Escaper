@@ -6,7 +6,6 @@ import androidx.core.content.ContextCompat
 import io.escaper.escaperapp.domain.GetSelectedStrategyUseCase
 import io.escaper.escaperapp.domain.ProxyStartResult
 import io.escaper.escaperapp.domain.ProxyStopResult
-import io.escaper.escaperapp.domain.StrategiesFactory
 import io.escaper.escaperapp.service.EscaperVpnService
 import io.escaper.escaperapp.service.START_ACTION
 import io.escaper.escaperapp.service.STOP_ACTION
