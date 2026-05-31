@@ -14,6 +14,8 @@ import io.escaper.escaperapp.core.TProxyService
 import io.escaper.escaperapp.core.ZapretProxy
 import io.escaper.escaperapp.data.AndroidConnectionStatusRepository
 import io.escaper.escaperapp.data.ProxyManagerState
+import io.escaper.escaperapp.domain.GetSelectedStrategyUseCase
+import io.escaper.escaperapp.domain.Strategy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -36,6 +38,8 @@ class EscaperVpnService : LifecycleVpnService(), KoinComponent {
     private val repository: AndroidConnectionStatusRepository by inject()
 
     private val zapretProxy: ZapretProxy by inject()
+
+    private val getSelectedStrategy: GetSelectedStrategyUseCase by inject()
 
     private val status
         get() = repository.connectionState.value
@@ -82,9 +86,20 @@ class EscaperVpnService : LifecycleVpnService(), KoinComponent {
             return
         }
 
+        val strategy = getSelectedStrategy()
+        if (strategy == null) {
+            val msg = "No selected strategy found"
+            Log.e(TAG, msg)
+            updateStatus(
+                newStatus = ProxyManagerState.Disconnected,
+                errorMessage = msg
+            )
+            return
+        }
+
         try {
             mutex.withLock {
-                startProxy()
+                startProxy(strategy)
                 startTun2Socks()
             }
             updateStatus(
@@ -138,7 +153,7 @@ class EscaperVpnService : LifecycleVpnService(), KoinComponent {
         stopSelf()
     }
 
-    private fun startProxy() {
+    private fun startProxy(strategy: Strategy) {
         Log.i(TAG, "Starting proxy")
 
         if (proxyJob != null) {
@@ -147,8 +162,7 @@ class EscaperVpnService : LifecycleVpnService(), KoinComponent {
         }
 
         proxyJob = lifecycleScope.launch(Dispatchers.IO) {
-            // Suspends forever!
-            val code = zapretProxy.startProxy()
+            val code = zapretProxy.startProxy(strategy.args)
 
             if (code != 0) {
                 val msg = "Failed to start proxy, exit code $code"
@@ -157,10 +171,6 @@ class EscaperVpnService : LifecycleVpnService(), KoinComponent {
                     newStatus = ProxyManagerState.Disconnected,
                     errorMessage = msg
                 )
-            } else {
-                if (!stopping) {
-                    stop()
-                }
             }
         }
 

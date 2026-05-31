@@ -3,6 +3,7 @@ package io.escaper.escaperapp.data
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
+import io.escaper.escaperapp.domain.GetSelectedStrategyUseCase
 import io.escaper.escaperapp.domain.ProxyStartResult
 import io.escaper.escaperapp.domain.ProxyStopResult
 import io.escaper.escaperapp.domain.StrategiesFactory
@@ -23,8 +24,7 @@ private const val UNKNOWN_ERROR = "Unknown error"
 internal actual class ProxyManager actual constructor(
     private val pathsProvider: PathsProvider,
     private val downloadManager: ExecutableDownloadManager,
-    private val settingsRepository: SettingsRepository,
-    private val strategiesFactory: StrategiesFactory,
+    private val getSelectedStrategy: GetSelectedStrategyUseCase,
 ) : KoinComponent {
 
     private val context: Context by inject()
@@ -38,12 +38,8 @@ internal actual class ProxyManager actual constructor(
         }
 
         return try {
-            val allStrategies = strategiesFactory.getStrategiesForPlatform()
-            val settings = settingsRepository.getSettings()
 
-            val selectedStrategy = allStrategies.find {
-                settings.selectedStrategy == it.name
-            } ?: return ProxyStartResult.Error("Strategy is not provided")
+            val selectedStrategy = getSelectedStrategy.invoke() ?: return ProxyStartResult.Error("Strategy is not provided")
 
             val intent = Intent(context, EscaperVpnService::class.java)
             intent.action = START_ACTION

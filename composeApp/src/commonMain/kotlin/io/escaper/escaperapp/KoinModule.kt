@@ -16,6 +16,7 @@ import io.escaper.escaperapp.data.createDataStore
 import io.escaper.escaperapp.data.db.AppDatabase
 import io.escaper.escaperapp.data.db.getDatabaseBuilder
 import io.escaper.escaperapp.data.db.getRoomDatabase
+import io.escaper.escaperapp.domain.GetSelectedStrategyUseCase
 import io.escaper.escaperapp.domain.LocaleRepository
 import io.escaper.escaperapp.domain.StrategiesFactory
 import io.escaper.escaperapp.platform.initializeLocale
@@ -121,6 +122,11 @@ private fun getSharedModule(): Module = module {
         ProxyManager(
             pathsProvider = get(),
             downloadManager = get(),
+            getSelectedStrategy = get(),
+        )
+    }
+    factory {
+        GetSelectedStrategyUseCase(
             settingsRepository = get(),
             strategiesFactory = get()
         )

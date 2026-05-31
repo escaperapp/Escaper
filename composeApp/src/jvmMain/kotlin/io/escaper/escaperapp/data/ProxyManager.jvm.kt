@@ -1,6 +1,14 @@
 package io.escaper.escaperapp.data
 
 import co.touchlab.kermit.Logger
+import io.escaper.escaperapp.data.MacSystemProxyManager.disableSystemProxy
+import io.escaper.escaperapp.data.MacSystemProxyManager.enableSystemProxy
+import io.escaper.escaperapp.data.MacSystemProxyManager.getActiveNetworkServices
+import io.escaper.escaperapp.domain.GetSelectedStrategyUseCase
+import io.escaper.escaperapp.domain.ProxyStartResult
+import io.escaper.escaperapp.domain.ProxyStopResult
+import io.escaper.escaperapp.platform.Platform
+import io.escaper.escaperapp.platform.PlatformProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -11,14 +19,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import io.escaper.escaperapp.data.MacSystemProxyManager.disableSystemProxy
-import io.escaper.escaperapp.data.MacSystemProxyManager.enableSystemProxy
-import io.escaper.escaperapp.data.MacSystemProxyManager.getActiveNetworkServices
-import io.escaper.escaperapp.domain.ProxyStartResult
-import io.escaper.escaperapp.domain.ProxyStopResult
-import io.escaper.escaperapp.domain.StrategiesFactory
-import io.escaper.escaperapp.platform.Platform
-import io.escaper.escaperapp.platform.PlatformProvider
 import java.net.InetSocketAddress
 import java.net.Socket
 import java.nio.file.Files
@@ -31,8 +31,7 @@ private const val DEFAULT_PROXY_HOST = "127.0.0.1"
 internal actual class ProxyManager actual constructor(
     private val pathsProvider: PathsProvider,
     private val downloadManager: ExecutableDownloadManager,
-    private val settingsRepository: SettingsRepository,
-    private val strategiesFactory: StrategiesFactory,
+    private val getSelectedStrategy: GetSelectedStrategyUseCase,
 ) {
     private val logger = Logger.withTag("ProxyManager")
 
@@ -75,12 +74,8 @@ internal actual class ProxyManager actual constructor(
                 }
             }
 
-            val allStrategies = strategiesFactory.getStrategiesForPlatform()
-            val settings = settingsRepository.getSettings()
-
-            val selectedStrategy = allStrategies.find {
-                settings.selectedStrategy == it.name
-            } ?: return@withContext ProxyStartResult.Error("Strategy is not provided")
+            val selectedStrategy = getSelectedStrategy()
+                ?: return@withContext ProxyStartResult.Error("Strategy is not provided")
 
 
             val args = listOf(binaryPath) + selectedStrategy.args
@@ -126,6 +121,7 @@ internal actual class ProxyManager actual constructor(
                     // Enable system SOCKS proxy
                     enableSystemProxy(DEFAULT_PROXY_PORT)
                 }
+
                 Platform.Windows -> Unit // On Windows, winws.exe works on driver level directly
             }
 
@@ -135,9 +131,6 @@ internal actual class ProxyManager actual constructor(
                     connectedSince = Clock.System.now()
                         .toLocalDateTime(TimeZone.currentSystemDefault()),
                 )
-            }
-            settingsRepository.updateSettings {
-                it.copy(lastWorkingStrategy = selectedStrategy.name)
             }
 
             return@withContext ProxyStartResult.Success(

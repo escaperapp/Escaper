@@ -1,28 +1,24 @@
 package io.escaper.escaperapp.core
 
-import kotlinx.coroutines.suspendCancellableCoroutine
+import io.escaper.escaperapp.nativebridge.TpwsBridge
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 class ZapretProxy {
-    companion object {
-        init {
-            // System.loadLibrary("byedpi")
-        }
-    }
 
     private val mutex = Mutex()
-    private var fd = -1
 
-    suspend fun startProxy(): Int {
-        return suspendCancellableCoroutine {
-
-        }
+    suspend fun startProxy(
+        args: List<String>,
+    ): Int = mutex.withLock {
+        TpwsBridge.run(
+            args = args.toTypedArray()
+        )
     }
 
     suspend fun stopProxy(): Int {
         return mutex.withLock {
-            // TODO
+            TpwsBridge.stop()
             0
         }
     }

@@ -168,15 +168,19 @@ room {
     schemaDirectory("$projectDir/schemas")
 }
 
-tasks.register<Exec>("runNdkBuild") {
-    group = "build"
-
+private fun getNdkExecutable(): String {
     val ndkDir = android.ndkDirectory
-    executable = if (System.getProperty("os.name").startsWith("Windows", ignoreCase = true)) {
+    return if (System.getProperty("os.name").startsWith("Windows", ignoreCase = true)) {
         "$ndkDir\\ndk-build.cmd"
     } else {
         "$ndkDir/ndk-build"
     }
+}
+
+tasks.register<Exec>("runNdkBuild") {
+    group = "build"
+
+    executable = getNdkExecutable()
     args = listOf(
         "NDK_PROJECT_PATH=build/intermediates/ndkBuild",
         "NDK_LIBS_OUT=src/androidMain/jniLibs",
