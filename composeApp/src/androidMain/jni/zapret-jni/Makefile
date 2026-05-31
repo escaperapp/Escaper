@@ -9,6 +9,7 @@ add_library(
         jni_bridge.c
         tpws_exit.c
         tpws_control.c
+        zapret_log_android.c
         ../zapret/tpws/tpws.c
         ../zapret/tpws/tpws_conn.c
         ../zapret/tpws/helpers.c
