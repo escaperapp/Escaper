@@ -16,6 +16,7 @@ import io.escaper.escaperapp.data.AndroidConnectionStatusRepository
 import io.escaper.escaperapp.data.ProxyManagerState
 import io.escaper.escaperapp.domain.GetSelectedStrategyUseCase
 import io.escaper.escaperapp.domain.Strategy
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -55,16 +56,24 @@ class EscaperVpnService : LifecycleVpnService(), KoinComponent {
         )
     }
 
+    private fun doAsync(
+        block: suspend CoroutineScope.() -> Unit
+    ): Job {
+        return lifecycleScope.launch(Dispatchers.IO) {
+            block()
+        }
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
         return when (val action = intent?.action) {
             START_ACTION -> {
-                lifecycleScope.launch { start() }
+                doAsync { start() }
                 START_STICKY
             }
 
             STOP_ACTION -> {
-                lifecycleScope.launch { stop() }
+                doAsync { stop() }
                 START_NOT_STICKY
             }
 
@@ -77,7 +86,7 @@ class EscaperVpnService : LifecycleVpnService(), KoinComponent {
 
     override fun onRevoke() {
         Log.i(TAG, "VPN revoked")
-        lifecycleScope.launch { stop() }
+        doAsync { stop() }
     }
 
     private suspend fun start() {
@@ -163,7 +172,7 @@ class EscaperVpnService : LifecycleVpnService(), KoinComponent {
             return
         }
 
-        proxyJob = lifecycleScope.launch(Dispatchers.IO) {
+        proxyJob = doAsync {
             val code = zapretProxy.startProxy(
                 args = strategy.args,
                 defaultPort = DEFAULT_PORT
