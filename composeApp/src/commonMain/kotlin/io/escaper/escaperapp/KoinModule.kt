@@ -30,113 +30,123 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
 import kotlinx.serialization.json.Json
 import org.koin.core.KoinApplication
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 fun KoinApplication.installCommonModules() {
-    modules(
-        module {
-            single { PathsProvider() }
-            single { ZipExtractor() }
-            single { HostListsManager() }
-            single<AppDatabase> {
-                getRoomDatabase(builder = getDatabaseBuilder())
-            }
-            single {
-                StrategiesFactory(
-                    pathsProvider = get(),
-                    hostListsManager = get()
-                )
-            }
-            single<Json> {
-                Json {
-                    ignoreUnknownKeys = true
-                }
-            }
-            single<HttpClient> {
-                HttpClient(CIO) {
-
-                    followRedirects = false
-
-                    install(HttpTimeout) {
-                        requestTimeoutMillis = 60_000
-                        connectTimeoutMillis = 30_000
-                        socketTimeoutMillis = 60_000
-                    }
-                    install(Logging) {
-                        // TODO: Disable logging in relese builds
-                        level = LogLevel.ALL
-                        logger = KtorKermitLogger()
-                    }
-
-                    expectSuccess = false
-                }
-            }
-            single<DataStore<Preferences>> {
-                createDataStore()
-            }
-            single<SettingsRepository> {
-                DataStoreSettingsRepository(
-                    dataStore = get()
-                )
-            }
-            single {
-                ZapretUrlProvider(
-                    httpClient = get(),
-                    json = get()
-                )
-            }
-            single {
-                LocaleRepository(
-                    dataStore = get()
-                )
-            }
-            single<StrategiesRepository> {
-                StrategiesRepository(
-                    database = get()
-                )
-            }
-            single {
-                ExecutableDownloadManager(
-                    pathsProvider = get(),
-                    httpClient = get(),
-                    zapretUrlProvider = get(),
-                    zipExtractor = get()
-                )
-            }
-            single {
-                ProxyManager(
-                    pathsProvider = get(),
-                    downloadManager = get(),
-                    settingsRepository = get(),
-                    strategiesFactory = get()
-                )
-            }
-            viewModel {
-                MainScreenViewModel(
-                    proxyManager = get(),
-                    settingsRepository = get(),
-                    downloadManager = get(),
-                    strategiesFactory = get(),
-                )
-            }
-            viewModel {
-                SettingsViewModel(
-                    localeRepository = get(),
-                )
-            }
-            viewModel {
-                MyStrategiesViewModel(
-                    strategiesRepository = get()
-                )
-            }
-            viewModel { params ->
-                EditStrategyViewModel(
-                    strategiesRepository = get(),
-                    editMode = params.get()
-                )
-            }
-        }
-    )
+    val platformModule = getPlatformModule()
+    val sharedModule = getSharedModule()
+    if (platformModule != null) {
+        modules(
+            platformModule,
+            sharedModule
+        )
+    } else {
+        modules(sharedModule)
+    }
     koin.get<LocaleRepository>().initializeLocale()
+}
+
+private fun getSharedModule(): Module = module {
+    single { PathsProvider() }
+    single { ZipExtractor() }
+    single { HostListsManager() }
+    single<AppDatabase> {
+        getRoomDatabase(builder = getDatabaseBuilder())
+    }
+    single {
+        StrategiesFactory(
+            pathsProvider = get(),
+            hostListsManager = get()
+        )
+    }
+    single<Json> {
+        Json {
+            ignoreUnknownKeys = true
+        }
+    }
+    single<HttpClient> {
+        HttpClient(CIO) {
+
+            followRedirects = false
+
+            install(HttpTimeout) {
+                requestTimeoutMillis = 60_000
+                connectTimeoutMillis = 30_000
+                socketTimeoutMillis = 60_000
+            }
+            install(Logging) {
+                // TODO: Disable logging in relese builds
+                level = LogLevel.ALL
+                logger = KtorKermitLogger()
+            }
+
+            expectSuccess = false
+        }
+    }
+    single<DataStore<Preferences>> {
+        createDataStore()
+    }
+    single<SettingsRepository> {
+        DataStoreSettingsRepository(
+            dataStore = get()
+        )
+    }
+    single {
+        ZapretUrlProvider(
+            httpClient = get(),
+            json = get()
+        )
+    }
+    single {
+        LocaleRepository(
+            dataStore = get()
+        )
+    }
+    single<StrategiesRepository> {
+        StrategiesRepository(
+            database = get()
+        )
+    }
+    single {
+        ExecutableDownloadManager(
+            pathsProvider = get(),
+            httpClient = get(),
+            zapretUrlProvider = get(),
+            zipExtractor = get()
+        )
+    }
+    single {
+        ProxyManager(
+            pathsProvider = get(),
+            downloadManager = get(),
+            settingsRepository = get(),
+            strategiesFactory = get()
+        )
+    }
+    viewModel {
+        MainScreenViewModel(
+            proxyManager = get(),
+            settingsRepository = get(),
+            downloadManager = get(),
+            strategiesFactory = get(),
+        )
+    }
+    viewModel {
+        SettingsViewModel(
+            localeRepository = get(),
+        )
+    }
+    viewModel {
+        MyStrategiesViewModel(
+            strategiesRepository = get()
+        )
+    }
+    viewModel { params ->
+        EditStrategyViewModel(
+            strategiesRepository = get(),
+            editMode = params.get()
+        )
+    }
 }

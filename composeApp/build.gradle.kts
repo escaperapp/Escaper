@@ -42,6 +42,7 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.sl4j.nop)
+            implementation(libs.androidx.lifecycle.service)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -91,6 +92,13 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = version.toString()
+
+        ndk {
+            abiFilters.add("armeabi-v7a")
+            abiFilters.add("arm64-v8a")
+            abiFilters.add("x86")
+            abiFilters.add("x86_64")
+        }
     }
     packaging {
         resources {
@@ -106,6 +114,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    ndkVersion = "30.0.14904198"
 }
 
 dependencies {
@@ -157,4 +166,27 @@ windowsManifestForCompose {
 
 room {
     schemaDirectory("$projectDir/schemas")
+}
+
+tasks.register<Exec>("runNdkBuild") {
+    group = "build"
+
+    val ndkDir = android.ndkDirectory
+    executable = if (System.getProperty("os.name").startsWith("Windows", ignoreCase = true)) {
+        "$ndkDir\\ndk-build.cmd"
+    } else {
+        "$ndkDir/ndk-build"
+    }
+    args = listOf(
+        "NDK_PROJECT_PATH=build/intermediates/ndkBuild",
+        "NDK_LIBS_OUT=src/androidMain/jniLibs",
+        "APP_BUILD_SCRIPT=src/androidMain/jni/Android.mk",
+        "NDK_APPLICATION_MK=src/androidMain/jni/Application.mk"
+    )
+
+    println("Command: $commandLine")
+}
+
+tasks.preBuild {
+    dependsOn("runNdkBuild")
 }

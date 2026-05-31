@@ -42,9 +42,8 @@ internal class StrategiesFactory(
             Platform.Linux -> LinuxStrategiesBuilder(binDir = binDir, listsDir = listsDir)
             Platform.MacOS -> DarwinStrategiesBuilder(binDir = binDir, listsDir = listsDir)
             Platform.Windows -> WinStrategiesBuilder(binDir = binDir, listsDir = listsDir)
-            Platform.Android,
-            Platform.Ios,
-                -> BaseStrategiesBuilder.NoOp
+            Platform.Android -> LinuxStrategiesBuilder(binDir = binDir, listsDir = listsDir)
+            Platform.Ios -> BaseStrategiesBuilder.NoOp
         }
     }
 }

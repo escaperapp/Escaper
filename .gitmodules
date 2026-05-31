@@ -1,0 +1,6 @@
+[submodule "composeApp/src/androidMain/jni/hev-socks5-tunnel"]
+	path = composeApp/src/androidMain/jni/hev-socks5-tunnel
+	url = https://github.com/heiher/hev-socks5-tunnel.git
+[submodule "composeApp/src/androidMain/jni/zapret"]
+	path = composeApp/src/androidMain/jni/zapret
+	url = https://github.com/bol-van/zapret.git

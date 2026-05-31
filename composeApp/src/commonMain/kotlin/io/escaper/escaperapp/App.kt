@@ -24,6 +24,7 @@ import io.escaper.escaperapp.presentation.common.escaperThemeViewModel
 import io.escaper.escaperapp.presentation.editstrategy.EditStrategyScreen
 import io.escaper.escaperapp.presentation.mainscreen.MainScreen
 import io.escaper.escaperapp.presentation.mainscreen.MainScreenViewModel
+import io.escaper.escaperapp.presentation.mainscreen.rememberSwitchProxyCallback
 import io.escaper.escaperapp.presentation.mystrategies.MyStrategiesScreen
 import io.escaper.escaperapp.presentation.settings.SettingsScreen
 import io.github.themeanimator.theme.isDark
@@ -70,11 +71,14 @@ fun App() {
                 }
             ) {
                 composable<EscaperScreen.MainScreen> {
+                    val permissionsCallback = rememberSwitchProxyCallback {
+                        viewModel.switchProxy()
+                    }
                     MainScreen(
                         state = state,
                         strategies = strategies,
                         onSelectStrategy = viewModel::selectStrategy,
-                        onSwitchProxy = viewModel::switchProxy,
+                        onSwitchProxy = permissionsCallback::switchProxy,
                         onMenuExpandedChange = viewModel::setMenuExpanded
                     )
                 }

@@ -36,7 +36,7 @@ internal actual class ProxyManager actual constructor(
 ) {
     private val logger = Logger.withTag("ProxyManager")
 
-    private val _state = MutableStateFlow(ProxyManagerState.Initial)
+    private val _state = MutableStateFlow(ProxyManagerState.Disconnected)
     actual val state = _state.asStateFlow()
 
     @Volatile
@@ -130,7 +130,7 @@ internal actual class ProxyManager actual constructor(
             }
 
             _state.update {
-                it.copy(
+                ProxyManagerState(
                     isConnected = true,
                     connectedSince = Clock.System.now()
                         .toLocalDateTime(TimeZone.currentSystemDefault()),
@@ -166,7 +166,7 @@ internal actual class ProxyManager actual constructor(
             }
 
             _state.update {
-                it.copy(
+                ProxyManagerState(
                     isConnected = false,
                     connectedSince = null,
                 )
