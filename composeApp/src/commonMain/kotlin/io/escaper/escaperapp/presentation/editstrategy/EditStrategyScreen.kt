@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,13 +30,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import escaper.composeapp.generated.resources.EscaperRes
 import escaper.composeapp.generated.resources.add_group_button_label
 import escaper.composeapp.generated.resources.add_strategy_header
+import escaper.composeapp.generated.resources.argument_input_save_label
 import escaper.composeapp.generated.resources.edit_strategy_header
+import escaper.composeapp.generated.resources.strategy_name_label
 import io.escaper.escaperapp.domain.args.AnyZapretArgument
 import io.escaper.escaperapp.navigation.LocalNavController
 import io.escaper.escaperapp.navigation.StrategyEditMode
 import io.escaper.escaperapp.presentation.argsinput.ArgumentInputSelector
 import io.escaper.escaperapp.presentation.common.EscaperTheme
 import io.escaper.escaperapp.presentation.components.button.EscaperButton
+import io.escaper.escaperapp.presentation.components.input.EscaperTextField
 import io.escaper.escaperapp.presentation.components.topbar.EscaperTopBar
 import io.escaper.escaperapp.presentation.icons.IconAdd
 import org.jetbrains.compose.resources.stringResource
@@ -73,6 +77,17 @@ private fun EditStrategyContent(
                 onBackClick = onBack
             )
         },
+        bottomBar = {
+            SaveGroupButton(
+                isEnabled = state.isSaveButtonEnabled,
+                modifier = Modifier
+                    .navigationBarsPadding()
+                    .padding(bottom = 12.dp)
+                    .padding(horizontal = 16.dp)
+            ) {
+                onEvent(StrategyEditEvent.SaveStrategy)
+            }
+        },
         contentColor = EscaperTheme.colors.mainText,
         containerColor = EscaperTheme.background
     ) { paddings ->
@@ -81,8 +96,18 @@ private fun EditStrategyContent(
             contentPadding = PaddingValues(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            item {
+                EscaperTextField(
+                    value = state.strategy.name,
+                    modifier = Modifier.fillMaxWidth(),
+                    onValueChange = { newValue ->
+                        onEvent(StrategyEditEvent.EditStrategyName(newValue))
+                    },
+                    topLabel = stringResource(EscaperRes.string.strategy_name_label)
+                )
+            }
             itemsIndexed(
-                items = state.strategy?.groups.orEmpty(),
+                items = state.strategy.groups,
                 key = { _, group -> group.hashCode() },
             ) { index, group ->
                 NewGroupInput(
@@ -126,10 +151,7 @@ private fun EditStrategyContent(
 private fun StrategyEditMode.toLabel(): String {
     return when (this) {
         StrategyEditMode.Create -> stringResource(EscaperRes.string.add_strategy_header)
-        is StrategyEditMode.Update -> stringResource(
-            EscaperRes.string.edit_strategy_header,
-            strategyName
-        )
+        is StrategyEditMode.Update -> stringResource(EscaperRes.string.edit_strategy_header)
     }
 }
 
@@ -184,7 +206,7 @@ private fun NewGroupInput(
                 .clickable(
                     onClick = onAddArgument
                 )
-                .padding( 8.dp),
+                .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -205,5 +227,19 @@ private fun AddGroupButton(
         title = stringResource(EscaperRes.string.add_group_button_label),
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
+    )
+}
+
+@Composable
+private fun SaveGroupButton(
+    isEnabled: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    EscaperButton(
+        title = stringResource(EscaperRes.string.argument_input_save_label),
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
+        enabled = isEnabled,
     )
 }

@@ -13,8 +13,12 @@ import io.escaper.escaperapp.platform.PlatformProvider
 import io.escaper.escaperapp.presentation.editstrategy.EditArgumentState.CreateNew
 import io.escaper.escaperapp.presentation.editstrategy.EditArgumentState.EditExisting
 import io.escaper.escaperapp.presentation.editstrategy.EditArgumentState.Missing
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -30,7 +34,7 @@ internal class EditStrategyViewModel(
         when (event) {
             is StrategyEditEvent.OnAddArgument -> {
                 _state.update {
-                    val oldStrategy = it.strategy ?: return@update it
+                    val oldStrategy = it.strategy
                     val newGroups = oldStrategy.groups.toMutableList().apply {
                         val oldGroup = getOrNull(event.groupIndex) ?: return@update it
                         set(event.groupIndex, oldGroup.copy(args = oldGroup.args + event.argument))
@@ -46,7 +50,7 @@ internal class EditStrategyViewModel(
 
             is StrategyEditEvent.OnUpdateArgument -> {
                 _state.update {
-                    val oldStrategy = it.strategy ?: return@update it
+                    val oldStrategy = it.strategy
                     val newGroups = oldStrategy.groups.toMutableList().apply {
                         val oldGroup = getOrNull(event.groupIndex) ?: return@update it
                         set(
@@ -69,7 +73,7 @@ internal class EditStrategyViewModel(
 
             is StrategyEditEvent.OnEditArgument -> {
                 _state.update {
-                    val oldStrategy = it.strategy ?: return@update it
+                    val oldStrategy = it.strategy
                     val newGroups = oldStrategy.groups.toMutableList().apply {
                         val oldGroup = getOrNull(event.groupIndex) ?: return@update it
                         set(
@@ -116,7 +120,7 @@ internal class EditStrategyViewModel(
 
             StrategyEditEvent.AddGroup -> {
                 _state.update {
-                    val oldStrategy = it.strategy ?: return@update it
+                    val oldStrategy = it.strategy
                     val newGroups = oldStrategy.groups.toMutableList().apply {
                         val newIndex = oldStrategy.groups.indices.lastOrNull()?.plus(1) ?: 0
                         add(
@@ -137,7 +141,7 @@ internal class EditStrategyViewModel(
 
             is StrategyEditEvent.OnDeleteArgument -> {
                 _state.update {
-                    val oldStrategy = it.strategy ?: return@update it
+                    val oldStrategy = it.strategy
                     val newGroups = oldStrategy.groups.toMutableList().apply {
                         val oldGroup = getOrNull(event.groupIndex) ?: return@update it
                         set(
@@ -157,6 +161,18 @@ internal class EditStrategyViewModel(
                 }
                 cancelArgumentEditing()
             }
+
+            StrategyEditEvent.SaveStrategy -> saveStrategy()
+            is StrategyEditEvent.EditStrategyName -> {
+                _state.update {
+                    val oldStrategy = it.strategy
+                    it.copy(
+                        strategy = oldStrategy.copy(
+                            name = event.name
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -172,17 +188,18 @@ internal class EditStrategyViewModel(
         viewModelScope.launch {
             val initialStrategy = when (editMode) {
                 StrategyEditMode.Create -> {
-                    TempStrategyModel.createEmpty()
+                    TempStrategyModel.Empty
                 }
 
                 is StrategyEditMode.Update -> {
                     val dbStrategy = strategiesRepository.getStrategyById(editMode.strategyId)
                     dbStrategy?.let {
                         TempStrategyModel(
+                            id = it.id,
                             name = it.name,
                             groups = dbStrategy.groups
                         )
-                    } ?: TempStrategyModel.createEmpty()
+                    } ?: TempStrategyModel.Empty
                 }
             }
             _state.update {
@@ -191,8 +208,41 @@ internal class EditStrategyViewModel(
         }
     }
 
+    private var saveStrategyJob: Job? = null
+
+    private fun saveStrategy() {
+        val currentState = _state.value
+        if (saveStrategyJob?.isActive == true) {
+            return
+        }
+        saveStrategyJob = viewModelScope.launch {
+            strategiesRepository.createOrUpdateStrategy(currentState.strategy)
+        }
+    }
+
+    private fun observeIsSaveButtonEnabled() {
+        viewModelScope.launch {
+            _state.map { it.oldStrategy to it.strategy }.distinctUntilChanged()
+                .map { (old, new) ->
+                    when (editMode) {
+                        StrategyEditMode.Create -> {
+                            new.groups.isNotEmpty() &&
+                                    new.name.isNotBlank()
+                        }
+
+                        is StrategyEditMode.Update -> old != new
+                    }
+                }.collectLatest { isEnabled ->
+                    _state.update {
+                        it.copy(isSaveButtonEnabled = isEnabled)
+                    }
+                }
+        }
+    }
+
     init {
         initializeTempStrategy()
+        observeIsSaveButtonEnabled()
     }
 }
 
@@ -232,18 +282,28 @@ sealed interface StrategyEditEvent {
     ) : StrategyEditEvent
 
     object AddGroup : StrategyEditEvent
+
+    object SaveStrategy : StrategyEditEvent
+
+    data class EditStrategyName(
+        val name: String,
+    ) : StrategyEditEvent
 }
 
 data class EditStrategyState(
-    val strategy: TempStrategyModel?,
+    val strategy: TempStrategyModel,
+    val oldStrategy: TempStrategyModel,
     val argumentEditState: EditArgumentState,
     val executableType: ExecutableType,
+    val isSaveButtonEnabled: Boolean,
 ) {
     companion object {
         val Initial = EditStrategyState(
-            strategy = null,
+            strategy = TempStrategyModel.Empty,
+            oldStrategy = TempStrategyModel.Empty,
             argumentEditState = Missing,
-            executableType = PlatformProvider.platform.executableType
+            executableType = PlatformProvider.platform.executableType,
+            isSaveButtonEnabled = false,
         )
     }
 }

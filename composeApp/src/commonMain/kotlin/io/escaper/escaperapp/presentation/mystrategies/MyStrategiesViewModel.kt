@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.escaper.escaperapp.data.StrategiesRepository
 import io.escaper.escaperapp.domain.Strategy
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -34,9 +35,7 @@ internal class MyStrategiesViewModel(
     fun onEvent(event: MyStrategiesEvent) {
         when (event) {
             is MyStrategiesEvent.DeleteStrategy -> {
-                viewModelScope.launch {
-                    strategiesRepository.deleteStrategy(event.strategy)
-                }
+                deleteStrategy(event.strategy)
             }
 
             is MyStrategiesEvent.ShowDeletionConfirmation -> {
@@ -44,6 +43,30 @@ internal class MyStrategiesViewModel(
                     it.copy(strategyPendingForDeletion = event.strategy)
                 }
             }
+
+            MyStrategiesEvent.HideDeletionConfirmation -> {
+                hidePendingConfirmation()
+            }
+        }
+    }
+
+    private var deleteStrategyJob: Job? = null
+
+    private fun deleteStrategy(
+        strategy: Strategy,
+    ) {
+        if (deleteStrategyJob?.isActive == true) {
+            return
+        }
+        deleteStrategyJob = viewModelScope.launch {
+            strategiesRepository.deleteStrategy(strategy)
+            hidePendingConfirmation()
+        }
+    }
+
+    private fun hidePendingConfirmation() {
+        _state.update {
+            it.copy(strategyPendingForDeletion = null)
         }
     }
 }
@@ -53,6 +76,8 @@ internal sealed interface MyStrategiesEvent {
     value class ShowDeletionConfirmation(
         val strategy: Strategy,
     ) : MyStrategiesEvent
+
+    object HideDeletionConfirmation : MyStrategiesEvent
 
     @JvmInline
     value class DeleteStrategy(

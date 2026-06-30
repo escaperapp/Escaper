@@ -28,16 +28,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import escaper.composeapp.generated.resources.EscaperRes
 import escaper.composeapp.generated.resources.add_strategy
 import escaper.composeapp.generated.resources.my_strategies_label
 import escaper.composeapp.generated.resources.no_custom_strategies_hint
+import escaper.composeapp.generated.resources.strategy_deletion_confirmation
 import io.escaper.escaperapp.domain.Strategy
+import io.escaper.escaperapp.domain.utils.quote
 import io.escaper.escaperapp.navigation.EscaperScreen
 import io.escaper.escaperapp.navigation.LocalNavController
 import io.escaper.escaperapp.navigation.StrategyEditMode
 import io.escaper.escaperapp.presentation.common.EscaperTheme
+import io.escaper.escaperapp.presentation.components.button.EscaperButton
 import io.escaper.escaperapp.presentation.components.topbar.EscaperTopBar
 import io.escaper.escaperapp.presentation.icons.IconDelete
 import io.escaper.escaperapp.presentation.icons.IconEdit
@@ -110,6 +115,7 @@ private fun MyStrategiesScreenContent(
                             .padding(paddings)
                     )
                 }
+                return@LazyColumn
             }
             items(
                 items = strategies,
@@ -124,6 +130,55 @@ private fun MyStrategiesScreenContent(
                 )
             }
         }
+    }
+
+    state.strategyPendingForDeletion?.let { strategy ->
+        Dialog(
+            onDismissRequest = {
+                onEvent(MyStrategiesEvent.HideDeletionConfirmation)
+            },
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+            ),
+            content = {
+                Column(
+                    Modifier
+                        .padding(horizontal = 16.dp)
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(EscaperTheme.colors.backgroundElevated)
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = stringResource(
+                            EscaperRes.string.strategy_deletion_confirmation,
+                            strategy.name.quote(),
+                        ),
+                        style = EscaperTheme.typography.bodyMedium,
+                        color = EscaperTheme.colors.mainText
+                    )
+                    Row(
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(top = 20.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        EscaperButton(
+                            title = "Cancel",
+                            onClick = {
+                                onEvent(MyStrategiesEvent.HideDeletionConfirmation)
+                            }
+                        )
+                        EscaperButton(
+                            title = "Delete",
+                            modifier = Modifier.padding(start = 16.dp),
+                            onClick = {
+                                onEvent(MyStrategiesEvent.DeleteStrategy(strategy))
+                            }
+                        )
+                    }
+                }
+            }
+        )
     }
 }
 

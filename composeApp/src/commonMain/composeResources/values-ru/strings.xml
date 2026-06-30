@@ -12,7 +12,7 @@
     <string name="my_strategies_label">Мои стратегии</string>
     <string name="no_custom_strategies_hint">Вы пока не добавили ни одной стратегии</string>
     <string name="add_strategy">Добавить стратегию</string>
-    <string name="edit_strategy_header">Стратегия %1$s</string>
+    <string name="edit_strategy_header">Редактировать стратегию</string>
     <string name="add_strategy_header">Добавление стратегии</string>
     <string name="argument_input_save_label">Сохранить</string>
     <string name="tpws_debug_mode_description">Уровень отладочного логгирования</string>
@@ -27,4 +27,6 @@
     <string name="bind_iface4_arg_description">Привязаться к первому IPv4-адресу сетевого интерфейса</string>
     <string name="bind_iface6_arg_description">Привязаться к первому IPv6-адресу сетевого интерфейса</string>
     <string name="add_group_button_label">Добавить группу</string>
+    <string name="strategy_name_label">Имя стратегии</string>
+    <string name="strategy_deletion_confirmation">Вы уверены, что хотите удалить стратегию %1$s?</string>
 </resources>
