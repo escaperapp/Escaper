@@ -152,7 +152,8 @@ private fun getSharedModule(): Module = module {
     viewModel { params ->
         EditStrategyViewModel(
             strategiesRepository = get(),
-            editMode = params.get()
+            editMode = params.get(),
+            navController = params.get()
         )
     }
 }

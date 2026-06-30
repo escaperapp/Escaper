@@ -85,7 +85,7 @@ internal sealed interface MyStrategiesEvent {
     ) : MyStrategiesEvent
 }
 
-data class MyStrategiesState(
+internal data class MyStrategiesState(
     val strategyPendingForDeletion: Strategy?,
     val strategies: List<Strategy>
 ) {

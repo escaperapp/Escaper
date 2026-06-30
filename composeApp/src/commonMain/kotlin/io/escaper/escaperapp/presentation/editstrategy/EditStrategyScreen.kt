@@ -52,7 +52,7 @@ internal fun EditStrategyScreen(
 ) {
     val navController = LocalNavController.current
     val viewModel: EditStrategyViewModel = koinViewModel {
-        parametersOf(mode)
+        parametersOf(mode, navController)
     }
     val state by viewModel.state.collectAsStateWithLifecycle()
     EditStrategyContent(

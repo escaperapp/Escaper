@@ -31,4 +31,5 @@
     <string name="add_group_button_label">Add group</string>
     <string name="strategy_name_label">Strategy name</string>
     <string name="strategy_deletion_confirmation">Are you sure you want to delete strategy %1$s?</string>
+    <string name="unnamed_strategy">Unnamed</string>
 </resources>

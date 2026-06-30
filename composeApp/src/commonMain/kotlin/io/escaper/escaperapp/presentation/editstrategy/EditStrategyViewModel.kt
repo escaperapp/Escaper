@@ -3,6 +3,9 @@ package io.escaper.escaperapp.presentation.editstrategy
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import escaper.composeapp.generated.resources.EscaperRes
+import escaper.composeapp.generated.resources.unnamed_strategy
 import io.escaper.escaperapp.data.StrategiesRepository
 import io.escaper.escaperapp.domain.ExecutableType
 import io.escaper.escaperapp.domain.GroupOfArguments
@@ -21,10 +24,12 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 
 @Stable
 internal class EditStrategyViewModel(
     private val editMode: StrategyEditMode,
+    private val navController: NavController,
     private val strategiesRepository: StrategiesRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(EditStrategyState.Initial)
@@ -203,7 +208,10 @@ internal class EditStrategyViewModel(
                 }
             }
             _state.update {
-                it.copy(strategy = initialStrategy)
+                it.copy(
+                    oldStrategy = initialStrategy,
+                    strategy = initialStrategy
+                )
             }
         }
     }
@@ -216,8 +224,18 @@ internal class EditStrategyViewModel(
             return
         }
         saveStrategyJob = viewModelScope.launch {
-            strategiesRepository.createOrUpdateStrategy(currentState.strategy)
+            strategiesRepository.createOrUpdateStrategy(
+                currentState.strategy.ensureNameNotEmpty()
+            )
+            navController.navigateUp()
         }
+    }
+
+    private suspend fun TempStrategyModel.ensureNameNotEmpty(): TempStrategyModel {
+        if (name.isNotBlank()) return this
+        return copy(
+            name = getString(EscaperRes.string.unnamed_strategy)
+        )
     }
 
     private fun observeIsSaveButtonEnabled() {
@@ -226,7 +244,7 @@ internal class EditStrategyViewModel(
                 .map { (old, new) ->
                     when (editMode) {
                         StrategyEditMode.Create -> {
-                            new.groups.isNotEmpty() &&
+                            new.groups.isNotEmpty() ||
                                     new.name.isNotBlank()
                         }
 
@@ -290,7 +308,7 @@ sealed interface StrategyEditEvent {
     ) : StrategyEditEvent
 }
 
-data class EditStrategyState(
+internal data class EditStrategyState(
     val strategy: TempStrategyModel,
     val oldStrategy: TempStrategyModel,
     val argumentEditState: EditArgumentState,

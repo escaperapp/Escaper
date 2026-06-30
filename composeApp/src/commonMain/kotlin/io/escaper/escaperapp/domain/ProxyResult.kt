@@ -1,6 +1,6 @@
 package io.escaper.escaperapp.domain
 
-sealed interface ProxyStartResult {
+internal sealed interface ProxyStartResult {
     data class Success(val strategy: Strategy) : ProxyStartResult
     data class Error(val errorMessage: String) : ProxyStartResult
 }

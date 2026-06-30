@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import io.escaper.escaperapp.domain.Strategy
 
 @Immutable
-data class MainScreenState(
+internal data class MainScreenState(
     val isConnected: Boolean,
     val isLoading: Boolean,
     val isDownloading: Boolean,
